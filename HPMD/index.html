@@ -55,11 +55,14 @@
             onEachFeature: function (feature, layer) {
             layer.bindPopup(
             '<h1>' + feature.properties.Name + '</h1>' +
-            '<h3>' + feature.properties.DNR_Region + ' Region</h3>' +
-            '<h3>' + feature.properties.Acres_DNRstat + ' Acres</h3>' +
-            '<h3><a href=' + feature.properties.Region_URL + ' target="_blank">REGION</href></h3>' +
-            '<h3><a href=' + feature.properties.Site_Details_URL + ' target="_blank">SITE DETAILS</href></h3>' +
-            '<h3><a href=' + feature.properties.DNR_Map_URL + ' target="_blank">MAP LINK</href></h3>');
+            '<h4>' + feature.properties.DNR_Region + ' Region' + '</h4>' +
+            '<h4>' + feature.properties.Acres_DNRstat + ' Acres</h4>' +
+            '<h4>Quarry: ' + feature.properties.Quarry + '</h4>' +
+            '<p>DNR Notes: ' + feature.properties.DNR_Note + '</p>' +
+            '<h4><a href=' + feature.properties.Region_URL + ' target="_blank">REGION LINK</href></h4>' +
+            '<h4><a href=' + feature.properties.Site_Details_URL + ' target="_blank">SITE DETAILS LINK</href></h4>' +
+            '<h4><a href=' + feature.properties.DNR_Map_URL + ' target="_blank">MAP LINK</href></h4> '
+            );
             }
           }).addTo(map)
         )
