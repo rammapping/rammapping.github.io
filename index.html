@@ -2,9 +2,90 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>RAM Mapping</title>
+    <title>Hunting Public Maryland Resources Project</title>
+
+    <!-- Load Leaflet from CDN -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+          integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+          crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+            integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+            crossorigin=""></script>
+
+    <!-- Load Esri Leaflet from CDN -->
+    <script src="https://unpkg.com/esri-leaflet@3.0.2/dist/esri-leaflet.js"
+        integrity="sha512-myckXhaJsP7Q7MZva03Tfme/MSF5a6HC2xryjAM4FxPLHGqlh5VALCbywHnzs2uPoF/4G/QVXyYDDSkp5nPfig=="
+        crossorigin=""></script>
+
+    <!-- Load my content -->
+    <script src="index.js"></script>
+    <link rel="stylesheet" href="index.css"/>
+
 </head>
 <body>
+<!--    <div id="disclaimer"><a href="disclaimer.html" target="_blank">DISCLAIMER</a></div>-->
+    <div id="mapid"></div>
+    <div id="basemaps-wrapper" class="leaflet-bar">
+        <select id="basemaps">
+            <option value="OpenStreetMap">Open Street Map</option>
+            <option value="Topographic">Topographic</option>
+            <option value="Streets">Streets</option>
+            <option value="Imagery">Imagery</option>
+            <option value="ImageryClarity">Imagery (Clarity)</option>
+        </select>
+    </div>
 
 </body>
+<script>
+        let huntingSpotsGeojson = 'Public Hunting Locations - Points - Data.geojson'
+        let map = L.map('mapid').setView([39.23, -77], 8);
+<!--        let layer = L.esri.basemapLayer('Topographic').addTo(map);-->
+        let layer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'})
+        layer.addTo(map)
+        let layerLabels;
+
+
+        fetch(
+          huntingSpotsGeojson
+        ).then(
+          res => res.json()
+        ).then(
+          data => L.geoJSON(data, {
+            pointToLayer: function (feature, latlng) {
+                let markerStyle = {
+                    fillColor: getColor(feature.properties.DNRRegion),
+                    color: "#FFF",
+                    fillOpacity: 0.9,
+                    opacity: 0.8,
+                    weight: 1,
+                    radius: 8
+                };
+
+                return L.circleMarker(latlng, markerStyle);
+            },
+            onEachFeature: function (feature, layer) {
+                layer.bindPopup(
+                    '<h1>' + feature.properties.GuideName1 + '</h1>' +
+                    '<h2>' + feature.properties.GuideName2 + '</h2>' +
+                    '<p>INFO: ' + feature.properties.Information + '</p>' +
+                    '<p>COUNTY: ' + feature.properties.County + '</p>' +
+                    '<p>LAND CODE: ' + feature.properties.LandCode + '</p>' +
+                    '<p>DNR Notes: ' + feature.properties.DNRNote + '</p>' +
+                    '<P><a href=' + feature.properties.RegionURL + ' target="_blank">REGION LINK</href></P>' +
+                    '<h4><a href=' + feature.properties.SiteDetailsURL + ' target="_blank">SITE DETAILS LINK</href></h4>' +
+                    '<h4><a href=' + feature.properties.DNRMapURL + ' target="_blank">MAP LINK</href></h4> '
+                );
+            }
+          }).addTo(map)
+        )
+
+        document
+            .querySelector('#basemaps')
+            .addEventListener('change', function (e) {
+                  let basemap = e.target.value;
+                  setBasemap(basemap);
+                      }
+                  );
+    </script>
 </html>
