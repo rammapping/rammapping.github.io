@@ -1,3 +1,10 @@
+function getColor(region) {
+    return  region == "SOUTHERN"     ? '#800888' :
+            region == "WESTERN"    ? '#969696' :
+            region == "EASTERN"  ? '#081d58' :
+            region == "CENTRAL"  ? '#006837' :
+                                       '#252525';
+}
 function setBasemap (basemap) {
     if (layer) {
       map.removeLayer(layer);

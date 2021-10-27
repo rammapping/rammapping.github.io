@@ -52,17 +52,30 @@
           res => res.json()
         ).then(
           data => L.geoJSON(data, {
+            pointToLayer: function (feature, latlng) {
+                let markerStyle = {
+                    fillColor: getColor(feature.properties.DNRRegion),
+                    color: "#FFF",
+                    fillOpacity: 0.9,
+                    opacity: 0.8,
+                    weight: 1,
+                    radius: 8
+                };
+
+                return L.circleMarker(latlng, markerStyle);
+            },
             onEachFeature: function (feature, layer) {
-            layer.bindPopup(
-            '<h1>' + feature.properties.Name + '</h1>' +
-            '<h4>' + feature.properties.DNR_Region + ' Region' + '</h4>' +
-            '<h4>' + feature.properties.Acres_DNRstat + ' Acres</h4>' +
-            '<h4>Quarry: ' + feature.properties.Quarry + '</h4>' +
-            '<p>DNR Notes: ' + feature.properties.DNR_Note + '</p>' +
-            '<h4><a href=' + feature.properties.Region_URL + ' target="_blank">REGION LINK</href></h4>' +
-            '<h4><a href=' + feature.properties.Site_Details_URL + ' target="_blank">SITE DETAILS LINK</href></h4>' +
-            '<h4><a href=' + feature.properties.DNR_Map_URL + ' target="_blank">MAP LINK</href></h4> '
-            );
+                layer.bindPopup(
+                    '<h1>' + feature.properties.GuideName1 + '</h1>' +
+                    '<h2>' + feature.properties.GuideName2 + '</h2>' +
+                    '<p>INFO: ' + feature.properties.Information + '</p>' +
+                    '<p>COUNTY: ' + feature.properties.County + '</p>' +
+                    '<p>LAND CODE: ' + feature.properties.LandCode + '</p>' +
+                    '<p>DNR Notes: ' + feature.properties.DNRNote + '</p>' +
+                    '<P><a href=' + feature.properties.RegionURL + ' target="_blank">REGION LINK</href></P>' +
+                    '<h4><a href=' + feature.properties.SiteDetailsURL + ' target="_blank">SITE DETAILS LINK</href></h4>' +
+                    '<h4><a href=' + feature.properties.DNRMapURL + ' target="_blank">MAP LINK</href></h4> '
+                );
             }
           }).addTo(map)
         )
