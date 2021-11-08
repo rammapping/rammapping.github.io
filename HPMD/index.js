@@ -1,10 +1,12 @@
-function getColor(region) {
-    return  region == "SOUTHERN"     ? '#800888' :
-            region == "WESTERN"    ? '#969696' :
-            region == "EASTERN"  ? '#081d58' :
-            region == "CENTRAL"  ? '#006837' :
-                                       '#252525';
-}
+//function getColor(areaType) {
+//
+//    return  ["CWMA", "WMA", "NEA", "NRMA", "FMA"].includes(areaType)   ? '#800888' :
+//            ["MHA"].includes(areaType)   ? '#969696' :
+//            ["SP", "SF", "CFL"].includes(areaType)  ? '#081d58' :
+//            ["MHA"].includes(areaType)  ? '#006837' :
+//                                       '#252525';
+//}
+
 function setBasemap (basemap) {
     if (layer) {
       map.removeLayer(layer);
