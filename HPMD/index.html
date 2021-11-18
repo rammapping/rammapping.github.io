@@ -75,14 +75,13 @@
             onEachFeature: function (feature, layer) {
                 layer.bindPopup(
                     '<h1>' + feature.properties.GuideName1 + '</h1>' +
-                    '<h2>' + feature.properties.GuideName2 + '</h2>' +
-                    '<p>INFO: ' + feature.properties.Information + '</p>' +
-                    '<p>COUNTY: ' + feature.properties.County + '</p>' +
-                    '<p>LAND CODE: ' + feature.properties.LandCode + '</p>' +
-                    '<p>DNR Notes: ' + feature.properties.DNRNote + '</p>' +
-                    '<P><a href=' + feature.properties.RegionURL + ' target="_blank">REGION LINK</href></P>' +
-                    '<h4><a href=' + feature.properties.SiteDetailsURL + ' target="_blank">SITE DETAILS LINK</href></h4>' +
-                    '<h4><a href=' + feature.properties.DNRMapURL + ' target="_blank">MAP LINK</href></h4> '
+                    '<h4>' + feature.properties.GuideName2 + '</h4>' +
+                    '<p>' + feature.properties.Information + '</p>' +
+<!--                    '<p>COUNTY: ' + feature.properties.County + '</p>' +-->
+                    '<p>LAND CODE(s): ' + feature.properties.LandCode + '</p>' +
+                    '<h4><a href=' + feature.properties.URL1 + ' target="_blank">Web Resource 1</href></h4>' +
+                    '<h4><a href=' + feature.properties.URL2 + ' target="_blank">Web Resource 2</href></h4>' +
+                    '<h4><a href=' + feature.properties.URL_MAP + ' target="_blank">Map</href></h4> '
                 );
             }
           }).addTo(map)
