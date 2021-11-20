@@ -1,12 +1,3 @@
-//function getColor(areaType) {
-//
-//    return  ["CWMA", "WMA", "NEA", "NRMA", "FMA"].includes(areaType)   ? '#800888' :
-//            ["MHA"].includes(areaType)   ? '#969696' :
-//            ["SP", "SF", "CFL"].includes(areaType)  ? '#081d58' :
-//            ["MHA"].includes(areaType)  ? '#006837' :
-//                                       '#252525';
-//}
-
 function setBasemap (basemap) {
     if (layer) {
       map.removeLayer(layer);
@@ -42,3 +33,16 @@ function setBasemap (basemap) {
     }
 
     }
+
+function onLocationFound(e) {
+    var radius = e.accuracy;
+
+    L.marker(e.latlng).addTo(map)
+        .bindPopup("You are within " + radius + " meters from this point").openPopup();
+
+    L.circle(e.latlng, radius).addTo(map);
+}
+
+function onLocationError(e) {
+    alert(e.message);
+}
