@@ -62,7 +62,7 @@
         let genericSeasonDayArraySorted = Object.keys(anyUsefulLandCodeDataSeasonDay).sort(function(a, b){return a-b})
 
         let anyUsefulLandCodeDataSexSeasons = seasonsHarvestsSexAntlersSum[Object.keys(seasonsHarvestsSexAntlersSum)[0]]
-        let genericSeasonsArraySorted = Object.keys(anyUsefulLandCodeDataSexSeasons).sort(function(a, b){return a-b});
+        let genericSeasonsArraySorted = Object.keys(anyUsefulLandCodeDataSexSeasons) //.sort(function(a, b){return a-b}); // In firefox it sorts backwards!!
 
         // Need a function to change the chart to use the most current user choice after the user hits submit
         let harvestLineChartSum; // Needs to be in namespace before function acts on it
