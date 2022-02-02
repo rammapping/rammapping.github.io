@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Land Codes Test</title>
+    <script src="landcodes.js"></script>
+    <script src="HarvestsByLandCodebySeasonDaySUM_Web.js"></script>
+    <script src="HarvestsByLandCodebySeasonDayMEAN_Web.js"></script>
+    <script src="NumberOfSeasonsPerLandcode_Web.js"></script>
+
+    <script src="HarvestsBySexPerLandCodeBySeasonDaySUM_Antlers_Web.js"></script>
+    <script src="HarvestsBySexPerLandCodeBySeasonDaySUM_NoAntlers_Web.js"></script>
+    <script src="HarvestsBySexPerLandCodeBySeasonDaySUM_Button_Web.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="landcodes.css"/>
+
+    <script src="lineChart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+<body>
+    <div id="headerInfo">
+        <h2>Choose the area of interest and click Submit</h2>
+
+        <p id="landCodeChooser"></p>
+        <input type="button" value="Submit" onclick="getLandCodeValue()" />
+    </div>
+    <div>
+        <h2 id="focusArea"></h2>
+        <p id="seasonsOfData"></p>
+        <p id="harvestData"></p>
+    </div>
+    <div>
+        <h3>Total Deer Harvest by Season Day</h3>
+        <canvas id="landCodeHarvestChartSum" width="1000" height="300" style="border:1px solid"></canvas>
+    </div>
+    <div>
+        <h3>Mean Deer Harvest by Season Day</h3>
+        <canvas id="landCodeHarvestChartMean" width="1000" height="300" style="border:1px solid"></canvas>
+    </div>
+    <div>
+        <h3>Total Deer Harvest by Sex by Season</h3>
+        <canvas id="landCodeHarvestChartSexSum" width="1000" height="300" style="border:1px solid"></canvas>
+    </div>
+
+    <script>
+        // Learned that this code has to follow the element being acted on, can't be before the element is declared.
+
+        // Build the choices for the drop down list from the landcodes json
+        let text = "<select id='landCodeDropDown'>"
+        for (let i = 0; i < landCodes.length; i++) {
+            let obj = landCodes[i]
+            let name = obj["Name"]
+            let code = obj["LandCode"]
+            text += `<option value=${code}>` + `${code} - ${name}`
+        }
+        text += "</select>"
+        document.getElementById("landCodeChooser").innerHTML = text;
+        
+        // Setup for the chart and retrieving data given the json object ordering issue I encountered
+        let anyUsefulLandCodeDataSeasonDay = seasonDayHarvestsSum[Object.keys(seasonDayHarvestsSum)[0]]
+        let genericSeasonDayArraySorted = Object.keys(anyUsefulLandCodeDataSeasonDay).sort(function(a, b){return a-b})
+
+        let anyUsefulLandCodeDataSexSeasons = seasonsHarvestsSexAntlersSum[Object.keys(seasonsHarvestsSexAntlersSum)[0]]
+        let genericSeasonsArraySorted = Object.keys(anyUsefulLandCodeDataSexSeasons).sort(function(a, b){return a-b});
+
+        // Need a function to change the chart to use the most current user choice after the user hits submit
+        let harvestLineChartSum; // Needs to be in namespace before function acts on it
+        let harvestLineChartMean; // Needs to be in namespace before function acts on it
+        let harvestBarChartSexSum; // Needs to be in namespace before function acts on it
+
+
+        function updatePageWithUserChosenCode(fullChoiceText, landCodeValue) {
+            // TODO: Break this function into many smaller focused functions
+
+            document.getElementById("focusArea").innerHTML = `${fullChoiceText}`;
+
+            //Testing purposes
+            //document.getElementById("harvestData").innerHTML = JSON.stringify(seasonDayHarvestsSum[landCodeValue]);
+
+            // Getting the number of seasons of data and setting element values
+            let seasonCountObj;
+            let numSeasons;
+            let minSeason;
+            let maxSeason;
+
+            try {
+                seasonCountObj = numberSeasonsPerLandcode[landCodeValue]
+                numSeasons = seasonCountObj["SeasonsCount"]
+                minSeason = seasonCountObj["SeasonMin"].replace("_", "/")
+                maxSeason = seasonCountObj["SeasonMax"].replace("_", "/")
+            } catch (TypeError) {
+                numSeasons = 0;
+                minSeasons = 0;
+                maxSeasons = 0;
+            }
+            finally {
+                
+                document.getElementById("seasonsOfData").innerHTML = `${numSeasons} seasons of data. (${minSeason} to ${maxSeason})`;
+            }
+
+
+            // Line Charts Based on Season Day
+            let labelsSeasonDay = genericSeasonDayArraySorted;
+            let harvestsSumSeasonDay = [];
+            let harvestsMeanSeasonDay = [];
+
+            let dataOfInterestSumSeasonDay = seasonDayHarvestsSum[landCodeValue];
+            let dataOfInterestMeanSeasonDay = seasonDayHarvestsMean[landCodeValue];
+
+            for (let i = 0; i < genericSeasonDayArraySorted.length; i++) {
+
+                // Total Harvests
+                let harvestCountSumSeasonDay;
+                try {
+                    harvestCountSumSeasonDay = dataOfInterestSumSeasonDay[genericSeasonDayArraySorted[i]]
+                } catch (TypeError) {
+                    // Handle situation where new area code is in options but no data exists yet
+                    alert(`No Sum Data for ${fullChoiceText}`)
+                    break;
+                }
+                harvestsSumSeasonDay.push(harvestCountSumSeasonDay);
+                
+                // Mean Harvests
+                let harvestCountMeanSeasonDay;
+                try {
+                    harvestCountMeanSeasonDay = dataOfInterestMeanSeasonDay[genericSeasonDayArraySorted[i]]
+                } catch (TypeError) {
+                    // Handle situation where new area code is in options but no data exists yet
+                    alert(`No Mean Data for ${fullChoiceText}`)
+                    break;
+                }
+                harvestsMeanSeasonDay.push(harvestCountMeanSeasonDay);
+
+            }
+            
+            // Total Harvests by Season Day by Landcode, Line Chart
+            let graphDataObjSum = assembleDataObj(labelsSeasonDay, "Sum: ", harvestsSumSeasonDay, colorOptions[0])
+            let configSum = createLineConfig(graphDataObjSum, "Total Deer Harvest by Season Day")
+            
+            if (typeof harvestLineChartSum !== 'undefined' || harvestLineChartSum != null) {
+                harvestLineChartSum.destroy();
+            }
+            harvestLineChartSum = new Chart(
+                document.getElementById('landCodeHarvestChartSum'),
+                configSum,
+              );
+            
+            // Mean Harvest by Season Day by Landcode, Line Chart
+            let graphDataObjMean = assembleDataObj(labelsSeasonDay, "Mean: ", harvestsMeanSeasonDay, colorOptions[1])
+            let configMean = createLineConfig(graphDataObjMean, "Mean Deer Harvest by Season Day")
+
+            if (typeof harvestLineChartMean !== 'undefined' || harvestLineChartMean != null) {
+                harvestLineChartMean.destroy();
+            }
+            harvestLineChartMean = new Chart(
+                document.getElementById('landCodeHarvestChartMean'),
+                configMean
+              );
+
+            // TODO: Total Harvests by Sex by Season, Stacked Bar Chart
+            let labelsSeasons = genericSeasonsArraySorted.map(item => item.replace('_','/'));
+            let dataAntler = [];
+            let dataNoAntler = [];
+            let dataButtonbuck = [];
+
+            // STOPPED: ISSUE WITH SOURCE DATA WHEN FILTERED FOR CERTAIN SEX. FIX NOTEBOOK OUTPUT
+            let seasonsButtonbuckObj = seasonsHarvestsSexButtonSum[landCodeValue]
+            let seasonsAntlerObj = seasonsHarvestsSexAntlersSum[landCodeValue]
+            let seasonsNoAntlerObj = seasonsHarvestsSexNoAntlersSum[landCodeValue]
+
+            for (let i = 0; i < genericSeasonsArraySorted.length; i++) {
+                let seasonFocus = genericSeasonsArraySorted[i]
+                // console.log(seasonFocus, landCodeValue)
+                // console.log(seasonsButtonbuckObj[seasonFocus], seasonsButtonbuckObj[seasonFocus])
+                dataAntler.push(seasonsAntlerObj[seasonFocus])
+                dataNoAntler.push(seasonsNoAntlerObj[seasonFocus])
+                dataButtonbuck.push(seasonsButtonbuckObj[seasonFocus])
+
+                // try {
+                // } catch {
+                //     dataAntler.push(0)
+                // }
+                // try {
+                // } catch {
+                //     dataNoAntler.push(0)
+                // }
+                // try {
+                // } catch {
+                //     dataButtonbuck.push(0)
+                // }
+                
+            }
+
+
+            let dataSexBar = {
+                labels: labelsSeasons,
+                datasets: [
+                    {
+                    label: 'Female or Antlerless Male',
+                    data: dataNoAntler,
+                    backgroundColor: "#ff5393",
+                    },
+                    {
+                    label: 'Male',
+                    data: dataAntler,
+                    backgroundColor: "#2986cc",
+                    },
+                    {
+                    label: 'Buttonbuck',
+                    data: dataButtonbuck,
+                    backgroundColor: "#9fc5e8",
+                    },
+                ]
+            };
+            const configSexBar = {
+                type: 'bar',
+                data: dataSexBar,
+                options: {
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Chart.js Bar Chart - Stacked'
+                        },
+                    },
+                    responsive: true,
+                    scales: {
+                        x: {
+                            stacked: true,
+                        },
+                        y: {
+                            stacked: true
+                        }
+                    }
+                }
+            };
+            if (typeof harvestBarChartSexSum !== 'undefined' || harvestBarChartSexSum != null) {
+                harvestBarChartSexSum.destroy();
+            }
+            harvestBarChartSexSum = new Chart(
+                document.getElementById('landCodeHarvestChartSexSum'),
+                configSexBar,
+              );
+
+            // TODO: Mean Harvests by Sex by Season day, Multi Line Chart
+
+
+        }
+
+        // Need function to get the users choice of land code from the drop down and manipulate dynamic elements
+        function getLandCodeValue() {
+            let dropDownElement = document.getElementById("landCodeDropDown");
+            let selectedText = dropDownElement.options[dropDownElement.selectedIndex].innerHTML;
+            let selectedValue = dropDownElement.value;
+            updatePageWithUserChosenCode(selectedText, selectedValue)
+        }
+
+
+    </script>
+
+</body>
+</html>

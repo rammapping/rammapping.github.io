@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Animal Harvests</title>
+
+    <!-- Load my content -->
+<!--    <script src="harvests.js"></script>-->
+<!--    <script src="Statewide_HarvestCount_SeasonDay.js"></script>-->
+    <script src="Statewide_HarvestCount_SeasonDay.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="harvests.css"/>
+    <script src="lineChart.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div>
+        <canvas id="harvestChart"></canvas>
+    </div>
+</body>
+<script>
+    let labels = []
+    let kills = []
+
+    for (index = 0; index < harvestData.length; index++) {
+        labels.push(harvestData[index]["season_day"])
+        kills.push(Math.round(harvestData[index]["Kill"]))
+    }
+
+    // TODO: USE THE LINCHART.JS FUNCTIONALITY HERE, FOR DATA AND CONFIG CREATION
+    const data = {
+      labels: labels,
+      datasets: [{
+        label: 'Statewide Mean',
+        data: kills,
+        fill: false,
+        borderColor: 'rgb(75, 192, 192)',
+        tension: 0.1
+      }]
+    };
+
+    const config = {
+      type: 'line',
+      data: data,
+      options: {
+        responsive: true,
+        layout: {
+        padding: 50
+        },
+        interaction: {
+            intersect: false,
+            mode: 'index',
+            },
+        plugins: {
+            legend: {
+                    display: false,
+            },
+            title: {
+                display: true,
+                text: 'Average Statewide Harvests by Season Day'
+            }
+        }
+        }
+    };
+
+    const myChart = new Chart(
+        document.getElementById('harvestChart'),
+        config
+      );
+
+</script>
+</html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Opening Stats</title>
+    <!-- <script src="ThanksgivingDates.js"></script> -->
+    <script src="seasonDates.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="openingStats.css"/>
+
+    <script>
+        //TODO: Extract all of this code to a js file and then call from this script
+        const todayDate = new Date()
+        const year = todayDate.getFullYear()
+        const month = todayDate.getMonth() + 1
+        const day = todayDate.getDate()
+        const todayDateBasic = new Date(`${month}/${day}/${year}`)
+
+        const seasonStartMonth = 7    // think the MD season turnover is July 1
+        const seasonStartYear = month < seasonStartMonth ? year - 1 : year;
+        const seasonString = `${seasonStartYear}/${seasonStartYear + 1}`
+
+        const seasonDatesObj = seasonDates[seasonStartYear]
+        const startMillis = seasonDatesObj["start"]
+        const thanksgivingMillis = seasonDatesObj["thanksgiving"]
+        const endMillis = seasonDatesObj["end"]
+        
+        // TODO: now that have json with all three date values, fix rest of this 20220129
+        // Create the start date components
+        const startDateFromMillis = new Date(startMillis)
+        const startDateYear = startDateFromMillis.getFullYear()
+        const startDateMonth = startDateFromMillis.getMonth() + 1
+        const startDateDay = startDateFromMillis.getDate()
+        const startDateBasic = new Date(`${startDateMonth}/${startDateDay}/${startDateYear}`)
+
+        // Create the thanksgiving date components
+        const thanksgivingDateFromMillis = new Date(thanksgivingMillis)
+        const thanksgivingDateYear = thanksgivingDateFromMillis.getFullYear()
+        const thanksgivingDateMonth = thanksgivingDateFromMillis.getMonth() + 1
+        const thanksgivingDateDay = thanksgivingDateFromMillis.getDate()
+        const thanksgivingDateBasic = new Date(`${thanksgivingDateMonth}/${thanksgivingDateDay}/${thanksgivingDateYear}`)
+
+        // No need to create the end date components since is always Feb 3
+        const endDateBasic = new Date(`February 3, ${seasonStartYear + 1}`)
+        
+        function deerSeasonDay() {
+            if (startDateBasic <= todayDateBasic <= endDateBasic) {
+                let differenceMillis = todayDate.getTime() - thanksgivingMillis
+                let days = differenceMillis / (1000 * 3600 * 24);
+                return `${Math.floor(days)}`
+            }
+            else {
+                return `Not deer season`
+            }
+
+        }
+
+        window.onload = function(){
+            document.getElementById('todayDate').innerHTML = `Today: ${todayDateBasic.toLocaleDateString()}`;
+            document.getElementById('season').innerHTML = `Season: ${seasonString}`;
+            document.getElementById('seasonStart').innerHTML = `Season Start: ${startDateFromMillis.toLocaleDateString()}`;
+            document.getElementById('seasonEnd').innerHTML = `Season End: ${endDateBasic.toLocaleDateString()}`;
+            document.getElementById('seasonDay').innerHTML = `Season Day: ${deerSeasonDay()}`;
+
+        };
+
+
+    </script>
+</head>
+<body>
+    <div>
+        <h2 id="todayDate"></h2>
+    </div>
+    <div>
+        <h2 id="season"></h2>
+    </div>
+    <div>
+        <h2 id="seasonStart"></h2>
+    </div>
+    <div>
+        <h2 id="seasonEnd"></h2>
+    </div>
+    <div>
+        <h2 id="seasonDay"></h2>
+        <p> Thanksgiving day is day zero (0).</p>
+    </div>
+<!--    <div id="meanHarvestsChartDiv">-->
+<!--        <embed id="statewideHarvestsEmbed" type="text/html" src="harvests.html" width="100%" height="50%">-->
+<!--        <object id="statewideHarvestsEmbed" data="harvests.html" ></object> &lt;!&ndash; width="500" height="200" &ndash;&gt;-->
+    <iframe src="harvests.html" height="600" width="1200" title="Iframe Example"></iframe>
+<!--    </div>-->
+<!--    <button type="button" onclick="get_date();">Get Value</button>-->
+</body>
+</html>
