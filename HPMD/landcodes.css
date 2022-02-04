@@ -15,7 +15,8 @@
 } */
 
 #mapid {
-  width: 65%;
+  margin: auto;
+  width: 85%;
   height: 400px;
   padding: 10px;
 }
