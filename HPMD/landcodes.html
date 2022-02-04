@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Land Codes Test</title>
+    <title>HPMD Deer Harvest Research Tool</title>
     <script src="landcodes.js"></script>
     <script src="HarvestsByLandCodebySeasonDaySUM_Web.js"></script>
     <script src="HarvestsByLandCodebySeasonDayMEAN_Web.js"></script>
@@ -15,7 +15,28 @@
     <link rel="stylesheet" type="text/css" href="landcodes.css"/>
 
     <script src="lineChart.js"></script>
+    <script src="barChart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+
+    <!-- Load Leaflet from CDN -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+    integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+    crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+            integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+            crossorigin=""></script>
+
+    <!-- Load Esri Leaflet from CDN -->
+    <script src="https://unpkg.com/esri-leaflet@3.0.2/dist/esri-leaflet.js"
+        integrity="sha512-myckXhaJsP7Q7MZva03Tfme/MSF5a6HC2xryjAM4FxPLHGqlh5VALCbywHnzs2uPoF/4G/QVXyYDDSkp5nPfig=="
+        crossorigin=""></script>
+
+    <!-- Load my content -->
+    <script src="huntLocations.js"></script>
+    <link rel="stylesheet" href="huntLocations2.css"/>
+
 
 </head>
 <body>
@@ -25,6 +46,26 @@
         <p id="landCodeChooser"></p>
         <input type="button" value="Submit" onclick="getLandCodeValue()" />
     </div>
+
+    <!-- <iframe id="huntLocMapPane" src="huntLocations.html"  title="Hunting Locations Map"></iframe> -->
+    <div>
+        <p><a href="huntLocations.html" target="_blank">Full Page Map</a></p>
+    </div>
+    <div id="mapid" ">
+        <div id="basemaps-wrapper" class="leaflet-bar">
+            <select id="basemaps">
+                <option value="OpenStreetMap">Open Street Map</option>
+                <option value="Topographic">Topographic</option>
+                <option value="Streets">Streets</option>
+                <option value="Imagery">Imagery</option>
+                <option value="ImageryClarity">Imagery (Clarity)</option>
+            </select>
+        </div>
+    </div>
+    
+    
+
+
     <div>
         <h2 id="focusArea"></h2>
         <p id="seasonsOfData"></p>
@@ -44,7 +85,92 @@
     </div>
 
     <script>
+
+        function onLocationFound(e) {
+            var radius = e.accuracy;
+
+            L.marker(e.latlng).addTo(map)
+                .bindPopup("You are within " + radius + " meters from this point").openPopup();
+
+            L.circle(e.latlng, radius).addTo(map);
+        }
+
+        function onLocationError(e) {
+            alert(e.message);
+        }
         // Learned that this code has to follow the element being acted on, can't be before the element is declared.
+        const huntingSpotsGeojson = 'Public Hunting Locations - Points - Data.geojson'
+        const urlEvaluator = (url, text) => url ? text : "Nothing";
+
+        let map = L.map('mapid').setView([39.23, -77], 8);
+
+        map.locate({setView: true, maxZoom: 16});
+        map.on('locationfound', onLocationFound);
+        map.on('locationerror', onLocationError);
+
+        let layer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'});
+        layer.addTo(map)
+
+        let layerLabels; // see js file
+
+        fetch(
+          huntingSpotsGeojson
+        ).then(
+          res => res.json(),
+        ).then(
+          data => L.geoJSON(data, {
+            pointToLayer: function (feature, latlng) {
+                let markerStyle = {
+                    // fillColor: getColor(feature.properties.Type),
+                    fillColor: "#FF8200",
+                    color: "#252525",
+                    fillOpacity: 0.9,
+                    opacity: 0.8,
+                    weight: 1,
+                    radius: 8
+                };
+
+                return L.circleMarker(latlng, markerStyle);
+            },
+            onEachFeature: function (feature, layer) {
+                // console.log(urlEvaluator(feature.properties.URL1, "Link 1"))
+                layer.bindPopup(
+                    '<h1>' + feature.properties.GuideName1 + '</h1>' +
+                    '<h4>' + feature.properties.GuideName2 + '</h4>' +
+                    '<p>' + feature.properties.Information + '</p>' +
+                    // '<p>COUNTY: ' + feature.properties.County + '</p>' +
+                    '<p>LAND CODE(s): ' + feature.properties.LandCode + '</p>' +
+                    '<h4><a href=' + feature.properties.URL1 + ' target="_blank">' + urlEvaluator(feature.properties.URL1, "Link 1") + '</href></h4>' +
+                    '<h4><a href=' + feature.properties.URL2 + ' target="_blank">' + urlEvaluator(feature.properties.URL2, "Link 2") + '</href></h4>' +
+                    '<h4><a href=' + feature.properties.URL_MAP + ' target="_blank">' + urlEvaluator(feature.properties.URL_MAP, "Map") + '</href></h4> '
+                );
+            }
+          }).addTo(map)
+        )
+
+        document
+            .querySelector('#basemaps')
+            .addEventListener('change', function (e) {
+                  let basemap = e.target.value;
+                  setBasemap(basemap);
+                      }
+                  );
+        
+        // STOPPED: TRYING TO BUILD OBJ OF LANDCODE TO LOCATION ARRAY
+        // let locations = fetchJSON(huntingSpotsGeojson)
+        //     .then(function(data) { 
+
+        //     // do what you want to do with `data` here...
+        //         data.features.forEach(function(feature) {
+        //             // console.log(feature);
+        //             var symbol = feature.properties['icon'];
+        //             console.log(symbol);
+        //         });
+
+        //     });
+
+
 
         // Build the choices for the drop down list from the landcodes json
         let text = "<select id='landCodeDropDown'>"
@@ -65,15 +191,20 @@
         let genericSeasonsArraySorted = Object.keys(anyUsefulLandCodeDataSexSeasons) //.sort(function(a, b){return a-b}); // In firefox it sorts backwards!!
 
         // Need a function to change the chart to use the most current user choice after the user hits submit
-        let harvestLineChartSum; // Needs to be in namespace before function acts on it
-        let harvestLineChartMean; // Needs to be in namespace before function acts on it
-        let harvestBarChartSexSum; // Needs to be in namespace before function acts on it
+        let harvestLineChartSum = new Chart(document.getElementById('landCodeHarvestChartSum'), createLineConfig(data={}, titleText="Total Deer Harvest by Season Day"),); // Needs to be in namespace before function acts on it
+        let harvestLineChartMean = new Chart(document.getElementById('landCodeHarvestChartMean'), createLineConfig(data={}, titleText="Mean Deer Harvest by Season Day")); // Needs to be in namespace before function acts on it
+        let harvestBarChartSexSum = new Chart(document.getElementById('landCodeHarvestChartSexSum'), createBarConfig(data={}, titleText="Total Deer Harvest by Sex by Season")); // Needs to be in namespace before function acts on it
 
 
         function updatePageWithUserChosenCode(fullChoiceText, landCodeValue) {
             // TODO: Break this function into many smaller focused functions
 
-            document.getElementById("focusArea").innerHTML = `${fullChoiceText}`;
+            // TODO: zoom map to point corresponding to user choice in dropdown list
+            // let locationArray;
+            // let zoomLevel = 10;
+            // map.setView(locationArray, zoomLevel, {animation: true});
+
+            // document.getElementById("focusArea").innerHTML = `${fullChoiceText}`;
 
             //Testing purposes
             //document.getElementById("harvestData").innerHTML = JSON.stringify(seasonDayHarvestsSum[landCodeValue]);
@@ -94,8 +225,7 @@
                 minSeasons = 0;
                 maxSeasons = 0;
             }
-            finally {
-                
+            finally {                
                 document.getElementById("seasonsOfData").innerHTML = `${numSeasons} seasons of data. (${minSeason} to ${maxSeason})`;
             }
 
@@ -116,7 +246,7 @@
                     harvestCountSumSeasonDay = dataOfInterestSumSeasonDay[genericSeasonDayArraySorted[i]]
                 } catch (TypeError) {
                     // Handle situation where new area code is in options but no data exists yet
-                    alert(`No Sum Data for ${fullChoiceText}`)
+                    // alert(`No Sum Data for ${fullChoiceText}`)
                     break;
                 }
                 harvestsSumSeasonDay.push(harvestCountSumSeasonDay);
@@ -135,8 +265,8 @@
             }
             
             // Total Harvests by Season Day by Landcode, Line Chart
-            let graphDataObjSum = assembleDataObj(labelsSeasonDay, "Sum: ", harvestsSumSeasonDay, colorOptions[0])
-            let configSum = createLineConfig(graphDataObjSum, "Total Deer Harvest by Season Day")
+            let graphDataObjSum = assembleLineDataObj(labels=labelsSeasonDay, labelText="Sum: ", graphData=harvestsSumSeasonDay, border=colorOptions[0])
+            let configSum = createLineConfig(data=graphDataObjSum, titleText="Total Deer Harvest by Season Day")
             
             if (typeof harvestLineChartSum !== 'undefined' || harvestLineChartSum != null) {
                 harvestLineChartSum.destroy();
@@ -147,8 +277,8 @@
               );
             
             // Mean Harvest by Season Day by Landcode, Line Chart
-            let graphDataObjMean = assembleDataObj(labelsSeasonDay, "Mean: ", harvestsMeanSeasonDay, colorOptions[1])
-            let configMean = createLineConfig(graphDataObjMean, "Mean Deer Harvest by Season Day")
+            let graphDataObjMean = assembleLineDataObj(labels=labelsSeasonDay, labelText="Mean: ", graphData=harvestsMeanSeasonDay, border=colorOptions[1])
+            let configMean = createLineConfig(data=graphDataObjMean, titleText="Mean Deer Harvest by Season Day")
 
             if (typeof harvestLineChartMean !== 'undefined' || harvestLineChartMean != null) {
                 harvestLineChartMean.destroy();
@@ -164,7 +294,6 @@
             let dataNoAntler = [];
             let dataButtonbuck = [];
 
-            // STOPPED: ISSUE WITH SOURCE DATA WHEN FILTERED FOR CERTAIN SEX. FIX NOTEBOOK OUTPUT
             let seasonsButtonbuckObj = seasonsHarvestsSexButtonSum[landCodeValue]
             let seasonsAntlerObj = seasonsHarvestsSexAntlersSum[landCodeValue]
             let seasonsNoAntlerObj = seasonsHarvestsSexNoAntlersSum[landCodeValue]
@@ -173,30 +302,26 @@
                 let seasonFocus = genericSeasonsArraySorted[i]
                 // console.log(seasonFocus, landCodeValue)
                 // console.log(seasonsButtonbuckObj[seasonFocus], seasonsButtonbuckObj[seasonFocus])
-                dataAntler.push(seasonsAntlerObj[seasonFocus])
-                dataNoAntler.push(seasonsNoAntlerObj[seasonFocus])
-                dataButtonbuck.push(seasonsButtonbuckObj[seasonFocus])
 
-                // try {
-                // } catch {
-                //     dataAntler.push(0)
-                // }
-                // try {
-                // } catch {
-                //     dataNoAntler.push(0)
-                // }
-                // try {
-                // } catch {
-                //     dataButtonbuck.push(0)
-                // }
+                try {
+                    dataAntler.push(seasonsAntlerObj[seasonFocus])
+                } catch {
+                    dataAntler.push(0)
+                }
+                try {
+                    dataNoAntler.push(seasonsNoAntlerObj[seasonFocus])
+                } catch {
+                    dataNoAntler.push(0)
+                }
+                try {
+                    dataButtonbuck.push(seasonsButtonbuckObj[seasonFocus])
+                } catch {
+                    dataButtonbuck.push(0)
+                }
                 
             }
 
-
-            let dataSexBar = {
-                labels: labelsSeasons,
-                datasets: [
-                    {
+            let barChartDatasetsArray = [{
                     label: 'Female or Antlerless Male',
                     data: dataNoAntler,
                     backgroundColor: "#ff5393",
@@ -210,30 +335,12 @@
                     label: 'Buttonbuck',
                     data: dataButtonbuck,
                     backgroundColor: "#9fc5e8",
-                    },
-                ]
-            };
-            const configSexBar = {
-                type: 'bar',
-                data: dataSexBar,
-                options: {
-                    plugins: {
-                        title: {
-                            display: true,
-                            text: 'Total Deer Harvest by Sex by Season'
-                        },
-                    },
-                    responsive: true,
-                    scales: {
-                        x: {
-                            stacked: true,
-                        },
-                        y: {
-                            stacked: true
-                        }
-                    }
-                }
-            };
+                    },]
+
+            let dataSexBar = assembleBarDataObj(labels=labelsSeasons, dataSetsArray=barChartDatasetsArray)
+
+            const configSexBar = createBarConfig(data=dataSexBar, titleText='Total Deer Harvest by Sex by Season')
+
             if (typeof harvestBarChartSexSum !== 'undefined' || harvestBarChartSexSum != null) {
                 harvestBarChartSexSum.destroy();
             }

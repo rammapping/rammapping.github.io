@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Hunting Public Maryland Resources</title>
+
+    <!-- Load Leaflet from CDN -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+          integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+          crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+            integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+            crossorigin=""></script>
+
+    <!-- Load Esri Leaflet from CDN -->
+    <script src="https://unpkg.com/esri-leaflet@3.0.2/dist/esri-leaflet.js"
+        integrity="sha512-myckXhaJsP7Q7MZva03Tfme/MSF5a6HC2xryjAM4FxPLHGqlh5VALCbywHnzs2uPoF/4G/QVXyYDDSkp5nPfig=="
+        crossorigin=""></script>
+
+    <!-- Load my content -->
+    <script src="huntLocations.js"></script>
+    <link rel="stylesheet" href="huntLocations.css"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+</head>
+<body>
+<!--    <div id="disclaimer"><a href="disclaimer.html" target="_blank">DISCLAIMER</a></div>-->
+    <div id="mapid"></div>
+    <div id="basemaps-wrapper" class="leaflet-bar">
+        <select id="basemaps">
+            <option value="OpenStreetMap">Open Street Map</option>
+            <option value="Topographic">Topographic</option>
+            <option value="Streets">Streets</option>
+            <option value="Imagery">Imagery</option>
+            <option value="ImageryClarity">Imagery (Clarity)</option>
+        </select>
+    </div>
+
+</body>
+<script>
+        const huntingSpotsGeojson = 'Public Hunting Locations - Points - Data.geojson'
+        const urlEvaluator = (url, text) => url ? text : "Nothing";
+        let map = L.map('mapid').setView([39.23, -77], 8);
+
+        map.locate({setView: true, maxZoom: 16});
+        map.on('locationfound', onLocationFound);
+        map.on('locationerror', onLocationError);
+
+        // L.esri.featureLayer({
+        //     url: 'https://gisapps.dnr.state.md.us/arcgis2/rest/services/AIMS/AIMSTrailDataRO/FeatureServer/14'
+        // }).addTo(map);
+
+        //let layer = L.esri.basemapLayer('Topographic').addTo(map);
+        let layer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'});
+        layer.addTo(map)
+
+        let layerLabels;
+
+        fetch(
+          huntingSpotsGeojson
+        ).then(
+          res => res.json()
+        ).then(
+          data => L.geoJSON(data, {
+            pointToLayer: function (feature, latlng) {
+                let markerStyle = {
+                    // fillColor: getColor(feature.properties.Type),
+                    fillColor: "#FF8200",
+                    color: "#252525",
+                    fillOpacity: 0.9,
+                    opacity: 0.8,
+                    weight: 1,
+                    radius: 8
+                };
+
+                return L.circleMarker(latlng, markerStyle);
+            },
+            onEachFeature: function (feature, layer) {
+                // console.log(urlEvaluator(feature.properties.URL1, "Link 1"))
+                layer.bindPopup(
+                    '<h1>' + feature.properties.GuideName1 + '</h1>' +
+                    '<h4>' + feature.properties.GuideName2 + '</h4>' +
+                    '<p>' + feature.properties.Information + '</p>' +
+                    // '<p>COUNTY: ' + feature.properties.County + '</p>' +
+                    '<p>LAND CODE(s): ' + feature.properties.LandCode + '</p>' +
+                    '<h4><a href=' + feature.properties.URL1 + ' target="_blank">' + urlEvaluator(feature.properties.URL1, "Link 1") + '</href></h4>' +
+                    '<h4><a href=' + feature.properties.URL2 + ' target="_blank">' + urlEvaluator(feature.properties.URL2, "Link 2") + '</href></h4>' +
+                    '<h4><a href=' + feature.properties.URL_MAP + ' target="_blank">' + urlEvaluator(feature.properties.URL_MAP, "Map") + '</href></h4> '
+                );
+            }
+          }).addTo(map)
+        )
+
+
+
+        document
+            .querySelector('#basemaps')
+            .addEventListener('change', function (e) {
+                  let basemap = e.target.value;
+                  setBasemap(basemap);
+                      }
+                  );
+        
+        //           map.eachLayer(function(layer){
+        //     console.log(layer)
+        // });
+        // for (let i = 0; i < map._layers.length; i++) {
+        //     console.log(map._layers[i])
+        // }
+    </script>
+</html>

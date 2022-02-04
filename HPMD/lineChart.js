@@ -1,6 +1,6 @@
 const colorOptions = ["#6aa84f", "#3d85c6", "#e69138", "#674ea7", "#a64d79"]
 
-function assembleDataObj(labels, labelText, graphData, border) {
+function assembleLineDataObj(labels, labelText, graphData, border) {
     let data = {
       labels: labels,
       datasets: [{
@@ -16,7 +16,7 @@ function assembleDataObj(labels, labelText, graphData, border) {
 }
 
 
-function createLineConfig(data, titleText) {
+function createLineConfig(data={}, titleText="No Title") {
     let config = {
           type: 'line',
           data: data,

@@ -6,3 +6,10 @@
     width: 95%;
     margin: 5px;
 }
+#huntLocMapPane {
+    /* Doesn't seem to work as I want it, to center div */
+    margin: auto;  
+    height: 300px;
+    width: 50%;
+  padding: 10px;
+}
