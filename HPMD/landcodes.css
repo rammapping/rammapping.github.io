@@ -5,11 +5,30 @@
     text-align: right;
     width: 95%;
     margin: 5px;
+    z-index: 700;
 }
-#huntLocMapPane {
-    /* Doesn't seem to work as I want it, to center div */
+/* #mapid {
     margin: auto;  
     height: 300px;
-    width: 50%;
+    width: 75%;
+  padding: 10px;
+} */
+
+#mapid {
+  width: 65%;
+  height: 400px;
   padding: 10px;
 }
+
+#basemaps-wrapper {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 600;
+  background: white;
+  padding: 10px;
+  }
+
+#basemaps {
+  margin-bottom: 5px;
+  }
