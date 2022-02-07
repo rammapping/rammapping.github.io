@@ -12,6 +12,7 @@
     <script src="HarvestsBySexPerLandCodeBySeasonDaySUM_NoAntlers_Web.js"></script>
     <script src="HarvestsBySexPerLandCodeBySeasonDaySUM_Button_Web.js"></script>
 
+    <script src="Public Hunting Locations - Points - Data.js"></script>
 
     <script src="lineChart.js"></script>
     <script src="barChart.js"></script>
@@ -49,7 +50,7 @@
     <div>
         <p><a href="huntLocations.html" target="_blank">Full Page Map</a></p>
     </div>
-    <div id="mapid" ">
+    <div id="mapid">
         <div id="basemaps-wrapper" class="leaflet-bar">
             <select id="basemaps">
                 <option value="OpenStreetMap">Open Street Map</option>
@@ -61,8 +62,6 @@
         </div>
     </div>
     
-    
-
 
     <div>
         <h2 id="focusArea"></h2>
@@ -97,27 +96,22 @@
             alert(e.message);
         }
         // Learned that this code has to follow the element being acted on, can't be before the element is declared.
-        const huntingSpotsGeojson = 'Public Hunting Locations - Points - Data.geojson'
         const urlEvaluator = (url, text) => url ? text : "Nothing";
-
-        let map = L.map('mapid').setView([39.23, -77], 8);
+        const defaultPointLocation = [39.23, -77];
+        const defaultZoom = 8;
+        let map = L.map('mapid').setView(defaultPointLocation, defaultZoom);
 
         map.locate({setView: true, maxZoom: 16});
         map.on('locationfound', onLocationFound);
         map.on('locationerror', onLocationError);
 
-        let layer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        let osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'});
-        layer.addTo(map)
+        osmLayer.addTo(map)
 
         let layerLabels; // see js file
 
-        fetch(
-          huntingSpotsGeojson
-        ).then(
-          res => res.json(),
-        ).then(
-          data => L.geoJSON(data, {
+        L.geoJSON(huntingSpotsGeojson, {
             pointToLayer: function (feature, latlng) {
                 let markerStyle = {
                     // fillColor: getColor(feature.properties.Type),
@@ -131,9 +125,9 @@
 
                 return L.circleMarker(latlng, markerStyle);
             },
-            onEachFeature: function (feature, layer) {
+            onEachFeature: function (feature, osmLayer) {
                 // console.log(urlEvaluator(feature.properties.URL1, "Link 1"))
-                layer.bindPopup(
+                osmLayer.bindPopup(
                     '<h1>' + feature.properties.GuideName1 + '</h1>' +
                     '<h4>' + feature.properties.GuideName2 + '</h4>' +
                     '<p>' + feature.properties.Information + '</p>' +
@@ -145,7 +139,6 @@
                 );
             }
           }).addTo(map)
-        )
 
         document
             .querySelector('#basemaps')
@@ -156,19 +149,27 @@
                   );
         
         // STOPPED: TRYING TO BUILD OBJ OF LANDCODE TO LOCATION ARRAY
-        // let locations = fetchJSON(huntingSpotsGeojson)
-        //     .then(function(data) { 
+        let huntSpotFeatures = huntingSpotsGeojson["features"]
+        let huntSpotInventory = {}
+        for (let i = 0; i < huntSpotFeatures.length; i++) {
+            let properties = huntSpotFeatures[i]["properties"];
+            // console.log(properties)
+            let code = properties["LandCode"];
 
-        //     // do what you want to do with `data` here...
-        //         data.features.forEach(function(feature) {
-        //             // console.log(feature);
-        //             var symbol = feature.properties['icon'];
-        //             console.log(symbol);
-        //         });
-
-        //     });
-
-
+            if (!code) {
+                // console.log("Bad Code: ", code)
+                continue;
+            }
+            else {
+                
+                let lat = properties["Latitude"];
+                let long = properties["Longitude"];
+                // console.log(code, lat, long)
+                huntSpotInventory[code] = [lat, long]
+            }
+            
+        }
+        // console.log(huntSpotInventory)
 
         // Build the choices for the drop down list from the landcodes json
         let text = "<select id='landCodeDropDown'>"
@@ -193,14 +194,9 @@
         let harvestLineChartMean = new Chart(document.getElementById('landCodeHarvestChartMean'), createLineConfig(data={}, titleText="Mean Deer Harvest by Season Day")); // Needs to be in namespace before function acts on it
         let harvestBarChartSexSum = new Chart(document.getElementById('landCodeHarvestChartSexSum'), createBarConfig(data={}, titleText="Total Deer Harvest by Sex by Season")); // Needs to be in namespace before function acts on it
 
-
+        console.log("1x")
         function updatePageWithUserChosenCode(fullChoiceText, landCodeValue) {
             // TODO: Break this function into many smaller focused functions
-
-            // TODO: zoom map to point corresponding to user choice in dropdown list
-            // let locationArray;
-            // let zoomLevel = 10;
-            // map.setView(locationArray, zoomLevel, {animation: true});
 
             // document.getElementById("focusArea").innerHTML = `${fullChoiceText}`;
 
@@ -349,7 +345,15 @@
 
             // TODO: Mean Harvests by Sex by Season day, Multi Line Chart
 
-
+            // TODO: zoom map to point corresponding to user choice in dropdown list
+            let locationArray = huntSpotInventory[landCodeValue];
+            zoomLevel = 13;
+            if (!locationArray) {
+                locationArray = defaultPointLocation;
+                zoomLevel = defaultZoom;
+            }
+            map.setView(locationArray, zoomLevel, {animation: true});
+            
         }
 
         // Need function to get the users choice of land code from the drop down and manipulate dynamic elements

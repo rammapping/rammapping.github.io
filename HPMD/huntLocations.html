@@ -19,6 +19,8 @@
 
     <!-- Load my content -->
     <script src="huntLocations.js"></script>
+    <script src="Public Hunting Locations - Points - Data.js"></script>
+
     <link rel="stylesheet" href="huntLocations.css"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 
@@ -38,7 +40,7 @@
 
 </body>
 <script>
-        const huntingSpotsGeojson = 'Public Hunting Locations - Points - Data.geojson'
+        // const huntingSpotsGeojson = 'Public Hunting Locations - Points - Data.geojson'
         const urlEvaluator = (url, text) => url ? text : "Nothing";
         let map = L.map('mapid').setView([39.23, -77], 8);
 
@@ -57,12 +59,14 @@
 
         let layerLabels;
 
-        fetch(
-          huntingSpotsGeojson
-        ).then(
-          res => res.json()
-        ).then(
-          data => L.geoJSON(data, {
+        // fetch(
+        //   huntingSpotsGeojson
+        // ).then(
+        //   res => res.json()
+        // ).then(
+        //   data => L.geoJSON(data, {
+            L.geoJSON(huntingSpotsGeojson, {
+
             pointToLayer: function (feature, latlng) {
                 let markerStyle = {
                     // fillColor: getColor(feature.properties.Type),
@@ -90,7 +94,7 @@
                 );
             }
           }).addTo(map)
-        )
+        // )
 
 
 

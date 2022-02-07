@@ -1,4 +1,4 @@
-{
+const huntingSpotsGeojson = {
 "type": "FeatureCollection",
 "features": [
 { "type": "Feature", "properties": { "#": 0, "HuntingGuideOnly": null, "LandCode": null, "RAMName": "Allens Fresh CWMA ", "GuideName1": "Zekiah Swamp NEA", "GuideName2": "None", "County": "CHARLES", "Information": "fr Waterfowl hunting only. Boat access only. 301-743-5161.Sunday hunting is allowed for the Spring Turkey Season on Dorchester County public lands.", "NOTE": null, "Type": "CWMA", "DNRRegion": "SOUTHERN", "URL1": "https://dnr.maryland.gov/wildlife/Pages/publiclands/wmasouthern.aspx", "URL2": null, "URL_MAP": " https://dnr.maryland.gov//wildlife/Documents/AllensFresh_CWMA.pdf", "LatLng": "38.41722551311779, -76.93303462639425", "Latitude": 38.41722551, "Longitude": -76.93303463, "Acres": "Null" }, "geometry": { "type": "Point", "coordinates": [ -76.93303463, 38.41722551 ] } },
