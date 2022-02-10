@@ -82,7 +82,9 @@
     </div>
 
     <script>
+        // Learned that this code has to follow the element being acted on, can't be before the element is declared.
 
+        // MAP SECTION
         function onLocationFound(e) {
             var radius = e.accuracy;
 
@@ -95,7 +97,7 @@
         function onLocationError(e) {
             alert(e.message);
         }
-        // Learned that this code has to follow the element being acted on, can't be before the element is declared.
+
         const urlEvaluator = (url, text) => url ? text : "Nothing";
         const defaultPointLocation = [39.23, -77];
         const defaultZoom = 8;
@@ -164,8 +166,12 @@
                 
                 let lat = properties["Latitude"];
                 let long = properties["Longitude"];
-                // console.log(code, lat, long)
-                huntSpotInventory[code] = [lat, long]
+                
+                // When the locations codes are xxx;xxx they need to be split apart for map zoom to work with drop down
+                let codeArray = code.split(";")
+                for (let i = 0; i < codeArray.length; i++){
+                    huntSpotInventory[codeArray[i]] = [lat, long]
+                }               
             }
             
         }
@@ -282,7 +288,7 @@
                 configMean
               );
 
-            // TODO: Total Harvests by Sex by Season, Stacked Bar Chart
+            // Total Harvests by Sex by Season, Stacked Bar Chart
             let labelsSeasons = genericSeasonsArraySorted.map(item => item.replace('_','/'));
             let dataAntler = [];
             let dataNoAntler = [];
@@ -294,8 +300,6 @@
 
             for (let i = 0; i < genericSeasonsArraySorted.length; i++) {
                 let seasonFocus = genericSeasonsArraySorted[i]
-                // console.log(seasonFocus, landCodeValue)
-                // console.log(seasonsButtonbuckObj[seasonFocus], seasonsButtonbuckObj[seasonFocus])
 
                 try {
                     dataAntler.push(seasonsAntlerObj[seasonFocus])
@@ -344,8 +348,9 @@
               );
 
             // TODO: Mean Harvests by Sex by Season day, Multi Line Chart
+            
 
-            // TODO: zoom map to point corresponding to user choice in dropdown list
+            // Zoom map to point corresponding to user choice in dropdown list
             let locationArray = huntSpotInventory[landCodeValue];
             zoomLevel = 13;
             if (!locationArray) {
