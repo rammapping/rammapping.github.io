@@ -44,7 +44,7 @@
         const endDateBasic = new Date(`February 3, ${seasonStartYear + 1}`)
         
         function deerSeasonDay() {
-            if (startDateBasic <= todayDateBasic <= endDateBasic) {
+            if (startDateBasic <= todayDateBasic && todayDateBasic <= endDateBasic) {
                 let differenceMillis = todayDate.getTime() - thanksgivingMillis
                 let days = differenceMillis / (1000 * 3600 * 24);
                 return `${Math.floor(days)}`
