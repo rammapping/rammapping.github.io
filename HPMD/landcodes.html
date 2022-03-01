@@ -73,14 +73,6 @@
         <p id="harvestData"></p>
     </div>
     <div>
-        <h3>Total Deer Harvest by Season Day</h3>
-        <canvas id="landCodeHarvestChartSum" width="1000" height="300" style="border:1px solid"></canvas>
-    </div>
-    <div>
-        <h3>Mean Deer Harvest by Season Day</h3>
-        <canvas id="landCodeHarvestChartMean" width="1000" height="300" style="border:1px solid"></canvas>
-    </div>
-    <div>
         <h3>Total Deer Harvest by Sex by Season</h3>
         <canvas id="landCodeHarvestChartSexBarSum" width="1000" height="300" style="border:1px solid"></canvas>
     </div>
@@ -88,6 +80,16 @@
         <h3>Mean Deer Harvest by Sex by Season Day</h3>
         <canvas id="landCodeHarvestChartSexLineMean" width="1000" height="300" style="border:1px solid"></canvas>
     </div>
+    <div>
+        <h3>Total Deer Harvest by Season Day</h3>
+        <canvas id="landCodeHarvestChartSum" width="1000" height="300" style="border:1px solid"></canvas>
+    </div>
+    <!-- <div>
+        <h3>Mean Deer Harvest by Season Day</h3>
+        <canvas id="landCodeHarvestChartMean" width="1000" height="300" style="border:1px solid"></canvas>
+    </div> -->
+
+
 
     <script>
         // Learned that this code has to follow the element being acted on, can't be before the element is declared.
@@ -201,7 +203,7 @@
 
         // Need a function to change the chart to use the most current user choice after the user hits submit
         let harvestLineChartSum = new Chart(document.getElementById('landCodeHarvestChartSum'), createLineConfig(data={}, titleText="Total Deer Harvest by Season Day"),displayLegend=false); // Needs to be in namespace before function acts on it
-        let harvestLineChartMean = new Chart(document.getElementById('landCodeHarvestChartMean'), createLineConfig(data={}, titleText="Mean Deer Harvest by Season Day"),displayLegend=false); // Needs to be in namespace before function acts on it
+        // let harvestLineChartMean = new Chart(document.getElementById('landCodeHarvestChartMean'), createLineConfig(data={}, titleText="Mean Deer Harvest by Season Day"),displayLegend=false); // Needs to be in namespace before function acts on it
         let harvestBarChartSexSum = new Chart(document.getElementById('landCodeHarvestChartSexBarSum'), createBarConfig(data={}, titleText="Total Deer Harvest by Sex by Season")); // Needs to be in namespace before function acts on it
         let harvestLineChartSexMean = new Chart(document.getElementById('landCodeHarvestChartSexLineMean'), createLineConfig(data={}, titleText="Mean Deer Harvest by Sex by Season Day")); // Needs to be in namespace before function acts on it
 
@@ -264,15 +266,15 @@
                 harvestsSumSeasonDay.push(harvestCountSumSeasonDay);
                 
                 // Mean Harvests
-                let harvestCountMeanSeasonDay;
-                try {
-                    harvestCountMeanSeasonDay = dataOfInterestMeanSeasonDay[genericSeasonDayArraySorted[i]]
-                } catch (TypeError) {
-                    // Handle situation where new area code is in options but no data exists yet
-                    // alert(`No Mean Data for ${fullChoiceText}`)
-                    // break;
-                }
-                harvestsMeanSeasonDay.push(harvestCountMeanSeasonDay);
+                // let harvestCountMeanSeasonDay;
+                // try {
+                //     harvestCountMeanSeasonDay = dataOfInterestMeanSeasonDay[genericSeasonDayArraySorted[i]]
+                // } catch (TypeError) {
+                //     // Handle situation where new area code is in options but no data exists yet
+                //     // alert(`No Mean Data for ${fullChoiceText}`)
+                //     // break;
+                // }
+                // harvestsMeanSeasonDay.push(harvestCountMeanSeasonDay);
             }
             
             // Total Harvests by Season Day by Landcode, Line Chart
@@ -288,16 +290,16 @@
               );
             
             // Mean Harvest by Season Day by Landcode, Line Chart
-            let graphDataObjMean = assembleLineDataObj(labels=labelsSeasonDay, labelText="Mean: ", graphData=harvestsMeanSeasonDay, border=colorOptions[1])
-            let configMean = createLineConfig(data=graphDataObjMean, titleText="Mean Deer Harvest by Season Day", displayLegend=false)
+            // let graphDataObjMean = assembleLineDataObj(labels=labelsSeasonDay, labelText="Mean: ", graphData=harvestsMeanSeasonDay, border=colorOptions[1])
+            // let configMean = createLineConfig(data=graphDataObjMean, titleText="Mean Deer Harvest by Season Day", displayLegend=false)
 
-            if (typeof harvestLineChartMean !== 'undefined' || harvestLineChartMean != null) {
-                harvestLineChartMean.destroy();
-            }
-            harvestLineChartMean = new Chart(
-                document.getElementById('landCodeHarvestChartMean'),
-                configMean
-              );
+            // if (typeof harvestLineChartMean !== 'undefined' || harvestLineChartMean != null) {
+            //     harvestLineChartMean.destroy();
+            // }
+            // harvestLineChartMean = new Chart(
+            //     document.getElementById('landCodeHarvestChartMean'),
+            //     configMean
+            //   );
 
             // Total Harvests by Sex by Season, Stacked Bar Chart
             let labelsSeasons = genericSeasonsArraySorted.map(item => item.replace('_','/'));
@@ -358,10 +360,7 @@
                 configSexBar,
               );
 
-            // TODO: Mean Harvests by Sex by Season day, Multi Line Chart
-            
-            // STOPPED: Have the three data files properly output, need to build out the chart
-
+            // Mean Harvests by Sex by Season day, Multi Line Chart
             // May need try/catch on these
             let dataOfInterestMeanSeasonDaySexButton = seasonsHarvestsSexButtonMean[landCodeValue];
             let dataOfInterestMeanSeasonDaySexAntler = seasonsHarvestsSexAntlersMean[landCodeValue];
