@@ -16,7 +16,7 @@ function assembleLineDataObj(labels, labelText, graphData, border) {
 }
 
 
-function createLineConfig(data={}, titleText="No Title") {
+function createLineConfig(data={}, titleText="No Title", displayLegend=true) {
     let config = {
           type: 'line',
           data: data,
@@ -31,7 +31,7 @@ function createLineConfig(data={}, titleText="No Title") {
                 },
               plugins: {
                     legend: {
-                            display: false,
+                            display: displayLegend,
                     },
                     title: {
                         display: true,
