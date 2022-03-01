@@ -128,7 +128,7 @@
                 let markerStyle = {
                     // fillColor: getColor(feature.properties.Type), // TODO: Adapt this to BowOnly 
                     fillColor: "#FF8200",
-                    color: "#252525",
+                    color: feature.properties.BowOnlyOption == "Yes" ?  "#ffffff" : "#252525",
                     fillOpacity: 0.9,
                     opacity: 0.8,
                     weight: 1,
