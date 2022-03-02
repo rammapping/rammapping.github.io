@@ -42,7 +42,9 @@
 <script>
         // const huntingSpotsGeojson = 'Public Hunting Locations - Points - Data.geojson'
         const urlEvaluator = (url, text) => url ? text : "Nothing";
-        let map = L.map('mapid').setView([39.23, -77], 8);
+        const defaultPointLocation = [39.23, -77];
+        const defaultZoom = 8;
+        let map = L.map('mapid').setView(defaultPointLocation, defaultZoom);
 
         map.locate({setView: true, maxZoom: 16});
         map.on('locationfound', onLocationFound);
@@ -65,13 +67,12 @@
         //   res => res.json()
         // ).then(
         //   data => L.geoJSON(data, {
-            L.geoJSON(huntingSpotsGeojson, {
-
+        L.geoJSON(huntingSpotsGeojson, {
             pointToLayer: function (feature, latlng) {
                 let markerStyle = {
                     // fillColor: getColor(feature.properties.Type),
                     fillColor: "#FF8200",
-                    color: "#252525",
+                    color: feature.properties.BowOnlyOption == "Yes" ?  "#ffffff" : "#252525",
                     fillOpacity: 0.9,
                     opacity: 0.8,
                     weight: 1,
@@ -93,10 +94,8 @@
                     '<h4><a href=' + feature.properties.URL_MAP + ' target="_blank">' + urlEvaluator(feature.properties.URL_MAP, "Map") + '</href></h4> '
                 );
             }
-          }).addTo(map)
+        }).addTo(map)
         // )
-
-
 
         document
             .querySelector('#basemaps')

@@ -26,8 +26,8 @@
 
     <!-- Load Leaflet from CDN -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
-    integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
-    crossorigin=""/>
+        integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+        crossorigin=""/>
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
             integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
             crossorigin=""></script>
@@ -38,7 +38,7 @@
         crossorigin=""></script>
 
     <!-- Load my content -->
-    <script src="huntLocations.js"></script>
+    <!-- <script src="huntLocations.js"></script> -->
     <link rel="stylesheet" type="text/css" href="landcodes.css"/>
 
 
@@ -95,6 +95,40 @@
         // Learned that this code has to follow the element being acted on, can't be before the element is declared.
 
         // MAP SECTION
+        function setBasemap (basemap) {
+            if (layer) {
+            map.removeLayer(layer);
+            }
+
+            if (basemap === "OpenStreetMap") {
+                layer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                })
+            } else {
+                layer = L.esri.basemapLayer(basemap);
+            }
+            // layer = L.esri.basemapLayer(basemap);
+
+            map.addLayer(layer);
+
+            // Label Controls
+            if (layerLabels) {
+            map.removeLayer(layerLabels);
+            }
+
+            if (
+            basemap === 'ShadedRelief'
+            ) {
+                layerLabels = L.esri.basemapLayer(basemap + 'Labels');
+                map.addLayer(layerLabels);
+            } else if (basemap.includes('Imagery')) {
+                layerLabels = L.esri.basemapLayer('ImageryLabels');
+                map.addLayer(layerLabels);
+            } else if (basemap.includes("OpenStreetMap")) {
+                false
+            }
+        }
+
         function onLocationFound(e) {
             var radius = e.accuracy;
 
@@ -117,9 +151,9 @@
         map.on('locationfound', onLocationFound);
         map.on('locationerror', onLocationError);
 
-        let osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        let layer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'});
-        osmLayer.addTo(map)
+        layer.addTo(map)
 
         let layerLabels; // see js file
 
@@ -137,9 +171,9 @@
 
                 return L.circleMarker(latlng, markerStyle);
             },
-            onEachFeature: function (feature, osmLayer) {
+            onEachFeature: function (feature, layer) {
                 // console.log(urlEvaluator(feature.properties.URL1, "Link 1"))
-                osmLayer.bindPopup(
+                layer.bindPopup(
                     '<h1>' + feature.properties.GuideName1 + '</h1>' +
                     '<h4>' + feature.properties.GuideName2 + '</h4>' +
                     '<p>' + feature.properties.Information + '</p>' +
