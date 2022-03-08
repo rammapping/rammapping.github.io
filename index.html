@@ -2,22 +2,90 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>RAM Mapping</title>
+    <title>HaRT</title>
+    <script src="seasonDates.js"></script>
 
+
+    <script>
+        //TODO: Extract all of this code to a js file and then call from this script
+        const todayDate = new Date()
+        const year = todayDate.getFullYear()
+        const month = todayDate.getMonth() + 1
+        const day = todayDate.getDate()
+        const todayDateBasic = new Date(`${month}/${day}/${year}`)
+
+        const seasonStartMonth = 7    // think the MD season turnover is July 1
+        const seasonStartYear = month < seasonStartMonth ? year - 1 : year;
+        const seasonString = `${seasonStartYear}/${seasonStartYear + 1}`
+
+        const seasonDatesObj = seasonDates[seasonStartYear]
+        const startMillis = seasonDatesObj["start"]
+        const thanksgivingMillis = seasonDatesObj["thanksgiving"]
+        const endMillis = seasonDatesObj["end"]
+        
+        // TODO: now that have json with all three date values, fix rest of this 20220129
+        // Create the start date components
+        const startDateFromMillis = new Date(startMillis)
+        const startDateYear = startDateFromMillis.getFullYear()
+        const startDateMonth = startDateFromMillis.getMonth() + 1
+        const startDateDay = startDateFromMillis.getDate()
+        const startDateBasic = new Date(`${startDateMonth}/${startDateDay}/${startDateYear}`)
+
+        // Create the thanksgiving date components
+        const thanksgivingDateFromMillis = new Date(thanksgivingMillis)
+        const thanksgivingDateYear = thanksgivingDateFromMillis.getFullYear()
+        const thanksgivingDateMonth = thanksgivingDateFromMillis.getMonth() + 1
+        const thanksgivingDateDay = thanksgivingDateFromMillis.getDate()
+        const thanksgivingDateBasic = new Date(`${thanksgivingDateMonth}/${thanksgivingDateDay}/${thanksgivingDateYear}`)
+
+        // No need to create the end date components since is always Feb 3
+        const endDateBasic = new Date(`February 3, ${seasonStartYear + 1}`)
+        
+        function deerSeasonDay() {
+            if (startDateBasic <= todayDateBasic && todayDateBasic <= endDateBasic) {
+                let differenceMillis = todayDate.getTime() - thanksgivingMillis
+                let days = differenceMillis / (1000 * 3600 * 24);
+                return `${Math.floor(days)}`
+            }
+            else {
+                return `Not deer season`
+            }
+
+        }
+
+        window.onload = function(){
+            document.getElementById('todayDate').innerHTML = `Today: ${todayDateBasic.toLocaleDateString()}`;
+            document.getElementById('season').innerHTML = `Season: ${seasonString}`;
+            document.getElementById('seasonStart').innerHTML = `Season Start: ${startDateFromMillis.toLocaleDateString()}`;
+            document.getElementById('seasonEnd').innerHTML = `Season End: ${endDateBasic.toLocaleDateString()}`;
+            document.getElementById('seasonDay').innerHTML = `Season Day: ${deerSeasonDay()}`;
+
+        };
+
+
+    </script>
 </head>
 <body>
-<h1>HPMD Resources</h1>
-<!-- <div>
-    <h2>Web Maps</h2>
-    <h3><a href="https://rammapping.github.io/HPMD/index.html">Desktop Version</a></h3>
-    <h3><a href="https://rammapping.github.io/HPMD/indexmobile.html">Mobile Version</a></h3>
-</div> -->
-<div>
-    <h2>Season & Harvest Information</h2>
-    <h3><a href="https://rammapping.github.io/HPMD/openingStats.html">General Season Info</a></h3>
-    <h3><a href="https://rammapping.github.io/HPMD/landcodes.html">HPMD Deer Research Tool</a></h3>
-
-</div>
+    <h1>Hunting Public MD Resources</h1>
+    <h2>Harvested Animals Research Tool (HART)</h2>
+    <!-- <div>
+        <h2>Web Maps</h2>
+        <h3><a href="https://rammapping.github.io/HPMD/index.html">Desktop Version</a></h3>
+        <h3><a href="https://rammapping.github.io/HPMD/indexmobile.html">Mobile Version</a></h3>
+    </div> -->
+    <div>
+        <!-- <h2>Season & Harvest Information</h2> -->
+        <!-- <h3><a href="https://rammapping.github.io/HPMD/openingStats.html">General Season Info</a></h3> -->
+        <h4 id="todayDate"></h4>
+        <h4 id="season"></h4>
+        <h4 id="seasonStart"></h4>
+        <h4 id="seasonEnd"></h4>
+        <h4 id="seasonDay"></h4>
+        <p>* Thanksgiving day is day zero (0).</p>
+    </div>
+    <div>
+        <h3><a href="https://rammapping.github.io/HPMD/landcodes.html">Hunting Public MD Resources HART</a></h3>
+    </div>
 
 </body>
 
