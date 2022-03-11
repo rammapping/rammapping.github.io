@@ -4,8 +4,12 @@
     <meta charset="UTF-8">
     <title>HPMD Deer Harvest Research Tool</title>
     <script src="landcodes.js"></script>
-    <script src="HarvestsByLandCodebySeasonDaySUM_Web.js"></script>
-    <!-- <script src="HarvestsByLandCodebySeasonDayMEAN_Web.js"></script> -->
+    <!-- <script src="HarvestsByLandCodebySeasonDaySUM_Web.js"></script> -->
+
+    <script src="HarvestsByLandCodebySeasonDayMEAN_Web.js"></script>
+    <script src="HarvestsByLandCodebySeasonDayMIN_Web.js"></script>
+    <script src="HarvestsByLandCodebySeasonDayMAX_Web.js"></script>
+
     <script src="NumberOfSeasonsPerLandcode_Web.js"></script>
 
     <script src="HarvestsBySexPerLandCodeBySeasonSUM_Antlers_Web.js"></script>
@@ -80,14 +84,14 @@
         <h3>Mean Deer Harvest by Sex by Season Day</h3>
         <canvas id="landCodeHarvestChartSexLineMean" width="1000" height="300" style="border:1px solid"></canvas>
     </div>
-    <div>
+    <!-- <div>
         <h3>Total Deer Harvest by Season Day</h3>
         <canvas id="landCodeHarvestChartSum" width="1000" height="300" style="border:1px solid"></canvas>
-    </div>
-    <!-- <div>
-        <h3>Mean Deer Harvest by Season Day</h3>
-        <canvas id="landCodeHarvestChartMean" width="1000" height="300" style="border:1px solid"></canvas>
     </div> -->
+    <div>
+        <h3>Mean/Min/Max Deer Harvest by Season Day</h3>
+        <canvas id="landCodeHarvestChartMeanMinMax" width="1000" height="300" style="border:1px solid"></canvas>
+    </div>
 
 
 
@@ -229,15 +233,16 @@
         document.getElementById("landCodeChooser").innerHTML = text;
         
         // Setup for the chart and retrieving data given the json object ordering issue I encountered
-        let anyUsefulLandCodeDataSeasonDay = seasonDayHarvestsSum[Object.keys(seasonDayHarvestsSum)[0]]
+        // let anyUsefulLandCodeDataSeasonDay = seasonDayHarvestsSum[Object.keys(seasonDayHarvestsSum)[0]]
+        let anyUsefulLandCodeDataSeasonDay = seasonDayHarvestsMin[Object.keys(seasonDayHarvestsMin)[0]]
         let genericSeasonDayArraySorted = Object.keys(anyUsefulLandCodeDataSeasonDay).sort(function(a, b){return a-b})
         
         let anyUsefulLandCodeDataSexSeasons = seasonsHarvestsSexAntlersSum[Object.keys(seasonsHarvestsSexAntlersSum)[0]]
         let genericSeasonsArraySorted = Object.keys(anyUsefulLandCodeDataSexSeasons) //.sort(function(a, b){return a-b}); // In firefox it sorts backwards!!
 
         // Need a function to change the chart to use the most current user choice after the user hits submit
-        let harvestLineChartSum = new Chart(document.getElementById('landCodeHarvestChartSum'), createLineConfig(data={}, titleText="Total Deer Harvest by Season Day"),displayLegend=false); // Needs to be in namespace before function acts on it
-        // let harvestLineChartMean = new Chart(document.getElementById('landCodeHarvestChartMean'), createLineConfig(data={}, titleText="Mean Deer Harvest by Season Day"),displayLegend=false); // Needs to be in namespace before function acts on it
+        // let harvestLineChartSum = new Chart(document.getElementById('landCodeHarvestChartSum'), createLineConfig(data={}, titleText="Total Deer Harvest by Season Day"),displayLegend=false); // Needs to be in namespace before function acts on it
+        let harvestLineChartMeanMinMax = new Chart(document.getElementById('landCodeHarvestChartMeanMinMax'), createLineConfig(data={}, titleText="Mean Deer Harvest by Season Day"),displayLegend=false); // Needs to be in namespace before function acts on it
         let harvestBarChartSexSum = new Chart(document.getElementById('landCodeHarvestChartSexBarSum'), createBarConfig(data={}, titleText="Total Deer Harvest by Sex by Season")); // Needs to be in namespace before function acts on it
         let harvestLineChartSexMean = new Chart(document.getElementById('landCodeHarvestChartSexLineMean'), createLineConfig(data={}, titleText="Mean Deer Harvest by Sex by Season Day")); // Needs to be in namespace before function acts on it
 
@@ -270,7 +275,7 @@
                 maxSeasons = 0;
             }
             finally {                
-                document.getElementById("seasonsOfData").innerHTML = `${numSeasons} seasons of data. (${minSeason} to ${maxSeason})`;
+                document.getElementById("seasonsOfData").innerHTML = `*Mean values based on ${numSeasons} seasons of data.`// (${minSeason} to ${maxSeason})`;
             }
 
 
@@ -278,26 +283,26 @@
             let labelsSeasonDay = genericSeasonDayArraySorted; // ASSESS: why do this reassignment??
 
             let harvestsSumSeasonDay = [];
-            let harvestsMeanSeasonDay = [];
+            // let harvestsMeanSeasonDay = [];
 
-            let dataOfInterestSumSeasonDay = seasonDayHarvestsSum[landCodeValue];
+            // let dataOfInterestSumSeasonDay = seasonDayHarvestsSum[landCodeValue];
             // let dataOfInterestMeanSeasonDay = seasonDayHarvestsMean[landCodeValue];
 
-            for (let i = 0; i < genericSeasonDayArraySorted.length; i++) {
+            // for (let i = 0; i < genericSeasonDayArraySorted.length; i++) {
 
                 // ASSESS: Does this looping need handling? The breaks will interfere without proper push when undefined????
 
                 // Total Harvests
-                let harvestCountSumSeasonDay;
-                try {
-                    harvestCountSumSeasonDay = dataOfInterestSumSeasonDay[genericSeasonDayArraySorted[i]]
-                } catch (TypeError) {
-                    // Handle situation where new area code is in options but no data exists yet
-                    // alert(`No Sum Data for ${fullChoiceText}`)
-                    // break;
-                }
+                // let harvestCountSumSeasonDay;
+                // try {
+                //     harvestCountSumSeasonDay = dataOfInterestSumSeasonDay[genericSeasonDayArraySorted[i]]
+                // } catch (TypeError) {
+                //     // Handle situation where new area code is in options but no data exists yet
+                //     // alert(`No Sum Data for ${fullChoiceText}`)
+                //     // break;
+                // }
                 
-                harvestsSumSeasonDay.push(harvestCountSumSeasonDay);
+                // harvestsSumSeasonDay.push(harvestCountSumSeasonDay);
                 
                 // Mean Harvests
                 // let harvestCountMeanSeasonDay;
@@ -309,30 +314,18 @@
                 //     // break;
                 // }
                 // harvestsMeanSeasonDay.push(harvestCountMeanSeasonDay);
-            }
+            // }
             
             // Total Harvests by Season Day by Landcode, Line Chart
-            let graphDataObjSum = assembleLineDataObj(labels=labelsSeasonDay, labelText="Sum: ", graphData=harvestsSumSeasonDay, border=colorOptions[0])
-            let configSum = createLineConfig(data=graphDataObjSum, titleText="Total Deer Harvest by Season Day", displayLegend=false)
+            // let graphDataObjSum = assembleLineDataObj(labels=labelsSeasonDay, labelText="Sum: ", graphData=harvestsSumSeasonDay, border=colorOptions[0])
+            // let configSum = createLineConfig(data=graphDataObjSum, titleText="Total Deer Harvest by Season Day", displayLegend=false)
             
-            if (typeof harvestLineChartSum !== 'undefined' || harvestLineChartSum != null) {
-                harvestLineChartSum.destroy();
-            }
-            harvestLineChartSum = new Chart(
-                document.getElementById('landCodeHarvestChartSum'),
-                configSum,
-              );
-            
-            // Mean Harvest by Season Day by Landcode, Line Chart
-            // let graphDataObjMean = assembleLineDataObj(labels=labelsSeasonDay, labelText="Mean: ", graphData=harvestsMeanSeasonDay, border=colorOptions[1])
-            // let configMean = createLineConfig(data=graphDataObjMean, titleText="Mean Deer Harvest by Season Day", displayLegend=false)
-
-            // if (typeof harvestLineChartMean !== 'undefined' || harvestLineChartMean != null) {
-            //     harvestLineChartMean.destroy();
+            // if (typeof harvestLineChartSum !== 'undefined' || harvestLineChartSum != null) {
+            //     harvestLineChartSum.destroy();
             // }
-            // harvestLineChartMean = new Chart(
-            //     document.getElementById('landCodeHarvestChartMean'),
-            //     configMean
+            // harvestLineChartSum = new Chart(
+            //     document.getElementById('landCodeHarvestChartSum'),
+            //     configSum,
             //   );
 
             // Total Harvests by Sex by Season, Stacked Bar Chart
@@ -405,20 +398,20 @@
             let harvestsSexMeanSeasonDayNoAntler = [];
 
             for (let i = 0; i < genericSeasonDayArraySorted.length; i++) {
-                // let message;
-                 // Mean Harvests Sex
+
+                // Mean Harvests Sex
                 // BUTTON BUCK
-                let harvestCountMeanSexSeasonDayButton;
+                let harvestCountMeanSeasonDay;
                 try {
-                    harvestCountMeanSexSeasonDayButton = dataOfInterestMeanSeasonDaySexButton[genericSeasonDayArraySorted[i]]
+                    harvestCountMeanSeasonDay = dataOfInterestMeanSeasonDaySexButton[genericSeasonDayArraySorted[i]]
                 } catch (TypeError) {
                     // Handle situation where new area code is in options but no data exists yet
                     // message = `${message}. No Mean Sex (Button) Data for ${fullChoiceText}`
                     // alert(`No Mean Sex (Button) Data for ${fullChoiceText}`)
                     // break;
                 }
-                if (harvestCountMeanSexSeasonDayButton) {
-                    harvestsSexMeanSeasonDayButton.push(harvestCountMeanSexSeasonDayButton);
+                if (harvestCountMeanSeasonDay) {
+                    harvestsSexMeanSeasonDayButton.push(harvestCountMeanSeasonDay);
                 } else {
                     harvestsSexMeanSeasonDayButton.push(0)
                 }
@@ -454,8 +447,6 @@
                 } else {
                     harvestsSexMeanSeasonDayNoAntler.push(0)
                 }
-                
-                // alert(message)
             }
             let graphDataObjSexMean = {
                     labels: labelsSeasonDay,
@@ -487,7 +478,6 @@
                     ]
                 };
 
-            // let graphDataObjSexMean = assembleLineDataObj(labels=labelsSeasonDay, labelText="Mean: ", graphData=harvestsMeanSeasonDay, border=colorOptions[1])
             let configSexMean = createLineConfig(data=graphDataObjSexMean, titleText="Mean Deer Harvest by Sex by Season Day")
 
             if (typeof harvestLineChartSexMean !== 'undefined' || harvestLineChartSexMean != null) {
@@ -497,6 +487,121 @@
                 document.getElementById('landCodeHarvestChartSexLineMean'),
                 configSexMean
               );
+            
+            
+            // Mean/Min/Max Harvest by Season Day by Landcode, Line Chart
+
+            let dataOfInterestMeanSeasonDay = seasonDayHarvestsMean[landCodeValue];
+            let dataOfInterestMinSeasonDay = seasonDayHarvestsMin[landCodeValue];
+            let dataOfInterestMaxSeasonDay = seasonDayHarvestsMax[landCodeValue];
+
+            let harvestsMeanSeasonDay = [];
+            let harvestsMinSeasonDay = [];
+            let harvestsMaxSeasonDay = [];
+
+            for (let i = 0; i < genericSeasonDayArraySorted.length; i++) {
+
+                // Mean Harvests
+                let harvestCountMeanSeasonDay;
+                try {
+                    harvestCountMeanSeasonDay = dataOfInterestMeanSeasonDay[genericSeasonDayArraySorted[i]]
+                } catch (TypeError) {
+                    // Handle situation where new area code is in options but no data exists yet
+                    // message = `${message}. No Mean Data for ${fullChoiceText}`
+                    // alert(`No Mean Sex (Button) Data for ${fullChoiceText}`)
+                    // break;
+                }
+                if (harvestCountMeanSeasonDay) {
+                    harvestsMeanSeasonDay.push(harvestCountMeanSeasonDay);
+                } else {
+                    harvestsMeanSeasonDay.push(0)
+                }
+
+                // Min Harvests
+                let harvestCountMinSeasonDay;
+                try {
+                    harvestCountMinSeasonDay = dataOfInterestMinSeasonDay[genericSeasonDayArraySorted[i]]
+                } catch (TypeError) {
+                    // Handle situation where new area code is in options but no data exists yet
+                    // message = `${message}. No Mean Data for ${fullChoiceText}`
+                    // alert(`No Mean Sex (Button) Data for ${fullChoiceText}`)
+                    // break;
+                }
+                if (harvestCountMinSeasonDay) {
+                    harvestsMinSeasonDay.push(harvestCountMinSeasonDay);
+                } else {
+                    harvestsMinSeasonDay.push(0)
+                }
+
+                // Max Harvests
+                let harvestCountMaxSeasonDay;
+                try {
+                    harvestCountMaxSeasonDay = dataOfInterestMaxSeasonDay[genericSeasonDayArraySorted[i]]
+                } catch (TypeError) {
+                    // Handle situation where new area code is in options but no data exists yet
+                    // message = `${message}. No Mean Data for ${fullChoiceText}`
+                    // alert(`No Mean Sex (Button) Data for ${fullChoiceText}`)
+                    // break;
+                }
+                if (harvestCountMaxSeasonDay) {
+                    harvestsMaxSeasonDay.push(harvestCountMaxSeasonDay);
+                } else {
+                    harvestsMaxSeasonDay.push(0)
+                }
+            }
+
+            // STOPPED: CAN'T FIGURE OUT THIS FRIGGIN FILL SYSTEM !!!!
+            let graphDataObjMeanMinMax = {
+                    labels: labelsSeasonDay,
+                    datasets: [
+                        
+                        {
+                            label: "Mean",
+                            data: harvestsMeanSeasonDay,
+                            fill: false,
+                            // borderColor: 'rgb(75, 192, 192)',
+                            borderColor: "black",
+                            // tension: 0.1
+                        },
+                        {
+                            label: "Min",
+                            data: harvestsMinSeasonDay,
+                            fill: false,
+                            // borderColor: "rgba(255, 255, 0, 0.8)"
+                            // backgroundColor: "rgba(255, 255, 0, 0.5)",
+                            // hidden: true,
+                            // borderColor: 'rgb(75, 192, 192)',
+                            // borderColor: "grey",
+                            // tension: 0.1 
+                        },
+                        {
+                            label: "Max",
+                            data: harvestsMaxSeasonDay,
+                            fill: "-1",
+                            backgroundColor: "rgba(255, 130, 0, 0.8)",
+                            // borderColor: "rgba(255, 255, 0, 0.8)"
+                            // borderColor: 'rgb(75, 192, 192)',
+                            // borderColor: "grey",
+                            // tension: 0.1 
+                        },
+
+                    ]
+                };
+            // let graphDataObjMeanMinMax = assembleLineDataObj(labels=labelsSeasonDay, labelText="Mean: ", graphData=harvestsMeanSeasonDay, border=colorOptions[1])
+            let configMeanMinMax = createLineConfig(data=graphDataObjMeanMinMax, titleText="Mean/Min/Max Deer Harvest by Season Day", displayLegend=false)
+            
+
+
+            if (typeof harvestLineChartMeanMinMax !== 'undefined' || harvestLineChartMeanMinMax != null) {
+                harvestLineChartMeanMinMax.destroy();
+            }
+            harvestLineChartMeanMinMax = new Chart(
+                document.getElementById('landCodeHarvestChartMeanMinMax'),
+                configMeanMinMax
+              );
+
+
+
 
 
             // Zoom map to point corresponding to user choice in dropdown list
@@ -506,8 +611,7 @@
                 locationArray = defaultPointLocation;
                 zoomLevel = defaultZoom;
             }
-            map.setView(locationArray, zoomLevel, {animation: true});
-            
+            map.setView(locationArray, zoomLevel, {animation: true});            
         }
 
         // Need function to get the users choice of land code from the drop down and manipulate dynamic elements
