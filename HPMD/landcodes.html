@@ -20,6 +20,10 @@
     <script src="HarvestsBySexPerLandCodeBySeasonDayMEAN_NoAntlers_Web.js"></script>
     <script src="HarvestsBySexPerLandCodeBySeasonDayMEAN_Button_Web.js"></script>
 
+    <script src="ReservationsByLandCodebySeasonDayMAX_Web.js"></script>
+    <script src="ReservationsByLandCodebySeasonDayMEAN_Web.js"></script>
+    <script src="ReservationsByLandCodebySeasonDayMIN_Web.js"></script>
+
     <script src="Public Hunting Locations - Points - Data.js"></script>
 
     <script src="lineChart.js"></script>
@@ -91,6 +95,10 @@
     <div>
         <h3>Mean/Min/Max Deer Harvest by Season Day</h3>
         <canvas id="landCodeHarvestChartMeanMinMax" width="1000" height="300" style="border:1px solid"></canvas>
+    </div>
+    <div>
+        <h3>Mean/Min/Max Reservations by Season Day (When Applicable)</h3>
+        <canvas id="landCodeReservationsChartMeanMinMax" width="1000" height="300" style="border:1px solid"></canvas>
     </div>
 
 
@@ -221,7 +229,7 @@
             
         }
 
-        // Build the choices for the drop down list from the landcodes json
+        // Build the choices for the drop down list, from the landcodes json
         let text = "<select id='landCodeDropDown'>"
         for (let i = 0; i < landCodes.length; i++) {
             let obj = landCodes[i]
@@ -242,9 +250,10 @@
 
         // Need a function to change the chart to use the most current user choice after the user hits submit
         // let harvestLineChartSum = new Chart(document.getElementById('landCodeHarvestChartSum'), createLineConfig(data={}, titleText="Total Deer Harvest by Season Day"),displayLegend=false); // Needs to be in namespace before function acts on it
-        let harvestLineChartMeanMinMax = new Chart(document.getElementById('landCodeHarvestChartMeanMinMax'), createLineConfig(data={}, titleText="Mean Deer Harvest by Season Day"),displayLegend=false); // Needs to be in namespace before function acts on it
+        let harvestLineChartMeanMinMax = new Chart(document.getElementById('landCodeHarvestChartMeanMinMax'), createLineConfig(data={}, titleText="Mean/Min/Max Deer Harvest by Season Day"), displayLegend=false); // Needs to be in namespace before function acts on it
         let harvestBarChartSexSum = new Chart(document.getElementById('landCodeHarvestChartSexBarSum'), createBarConfig(data={}, titleText="Total Deer Harvest by Sex by Season")); // Needs to be in namespace before function acts on it
         let harvestLineChartSexMean = new Chart(document.getElementById('landCodeHarvestChartSexLineMean'), createLineConfig(data={}, titleText="Mean Deer Harvest by Sex by Season Day")); // Needs to be in namespace before function acts on it
+        let reservationsLineChartMeanMinMax = new Chart(document.getElementById('landCodeReservationsChartMeanMinMax'), createLineConfig(data={}, titleText="Mean/Min/Max Hunter Reservations by Season Day"), displayLegend=false); // Needs to be in namespace before function acts on it
 
         function updatePageWithUserChosenCode(fullChoiceText, landCodeValue) {
             // TODO: Break this function into many smaller focussed functions
@@ -282,11 +291,11 @@
             // Single-Line Chart Based on Season Day
             let labelsSeasonDay = genericSeasonDayArraySorted; // ASSESS: why do this reassignment??
 
-            let harvestsSumSeasonDay = [];
+            // let harvestsSumSeasonDay = [];
             // let harvestsMeanSeasonDay = [];
 
             // let dataOfInterestSumSeasonDay = seasonDayHarvestsSum[landCodeValue];
-            // let dataOfInterestMeanSeasonDay = seasonDayHarvestsMean[landCodeValue];
+            // let dataOfInterestHarvestsMeanSeasonDay = seasonDayHarvestsMean[landCodeValue];
 
             // for (let i = 0; i < genericSeasonDayArraySorted.length; i++) {
 
@@ -307,7 +316,7 @@
                 // Mean Harvests
                 // let harvestCountMeanSeasonDay;
                 // try {
-                //     harvestCountMeanSeasonDay = dataOfInterestMeanSeasonDay[genericSeasonDayArraySorted[i]]
+                //     harvestCountMeanSeasonDay = dataOfInterestHarvestsMeanSeasonDay[genericSeasonDayArraySorted[i]]
                 // } catch (TypeError) {
                 //     // Handle situation where new area code is in options but no data exists yet
                 //     // alert(`No Mean Data for ${fullChoiceText}`)
@@ -491,9 +500,9 @@
             
             // Mean/Min/Max Harvest by Season Day by Landcode, Line Chart
 
-            let dataOfInterestMeanSeasonDay = seasonDayHarvestsMean[landCodeValue];
-            let dataOfInterestMinSeasonDay = seasonDayHarvestsMin[landCodeValue];
-            let dataOfInterestMaxSeasonDay = seasonDayHarvestsMax[landCodeValue];
+            let dataOfInterestHarvestsMeanSeasonDay = seasonDayHarvestsMean[landCodeValue];
+            let dataOfInterestHarvestsMinSeasonDay = seasonDayHarvestsMin[landCodeValue];
+            let dataOfInterestHarvestsMaxSeasonDay = seasonDayHarvestsMax[landCodeValue];
 
             let harvestsMeanSeasonDay = [];
             let harvestsMinSeasonDay = [];
@@ -504,7 +513,7 @@
                 // Mean Harvests
                 let harvestCountMeanSeasonDay;
                 try {
-                    harvestCountMeanSeasonDay = dataOfInterestMeanSeasonDay[genericSeasonDayArraySorted[i]]
+                    harvestCountMeanSeasonDay = dataOfInterestHarvestsMeanSeasonDay[genericSeasonDayArraySorted[i]]
                 } catch (TypeError) {
                     // Handle situation where new area code is in options but no data exists yet
                     // message = `${message}. No Mean Data for ${fullChoiceText}`
@@ -520,7 +529,7 @@
                 // Min Harvests
                 let harvestCountMinSeasonDay;
                 try {
-                    harvestCountMinSeasonDay = dataOfInterestMinSeasonDay[genericSeasonDayArraySorted[i]]
+                    harvestCountMinSeasonDay = dataOfInterestHarvestsMinSeasonDay[genericSeasonDayArraySorted[i]]
                 } catch (TypeError) {
                     // Handle situation where new area code is in options but no data exists yet
                     // message = `${message}. No Mean Data for ${fullChoiceText}`
@@ -536,7 +545,7 @@
                 // Max Harvests
                 let harvestCountMaxSeasonDay;
                 try {
-                    harvestCountMaxSeasonDay = dataOfInterestMaxSeasonDay[genericSeasonDayArraySorted[i]]
+                    harvestCountMaxSeasonDay = dataOfInterestHarvestsMaxSeasonDay[genericSeasonDayArraySorted[i]]
                 } catch (TypeError) {
                     // Handle situation where new area code is in options but no data exists yet
                     // message = `${message}. No Mean Data for ${fullChoiceText}`
@@ -550,8 +559,7 @@
                 }
             }
 
-            // STOPPED: CAN'T FIGURE OUT THIS FRIGGIN FILL SYSTEM !!!!
-            let graphDataObjMeanMinMax = {
+            let graphDataObjHarvestsMeanMinMax = {
                     labels: labelsSeasonDay,
                     datasets: [
                         
@@ -587,8 +595,8 @@
 
                     ]
                 };
-            // let graphDataObjMeanMinMax = assembleLineDataObj(labels=labelsSeasonDay, labelText="Mean: ", graphData=harvestsMeanSeasonDay, border=colorOptions[1])
-            let configMeanMinMax = createLineConfig(data=graphDataObjMeanMinMax, titleText="Mean/Min/Max Deer Harvest by Season Day", displayLegend=false)
+            // let graphDataObjHarvestsMeanMinMax = assembleLineDataObj(labels=labelsSeasonDay, labelText="Mean: ", graphData=harvestsMeanSeasonDay, border=colorOptions[1])
+            let configHarvestsMeanMinMax = createLineConfig(data=graphDataObjHarvestsMeanMinMax, titleText="Mean/Min/Max Deer Harvest by Season Day", displayLegend=false)
             
 
 
@@ -597,11 +605,115 @@
             }
             harvestLineChartMeanMinMax = new Chart(
                 document.getElementById('landCodeHarvestChartMeanMinMax'),
-                configMeanMinMax
+                configHarvestsMeanMinMax
               );
+              
+            // Mean/Min/Max Reservations by Season Day by Landcode, Line Chart
+            let dataOfInterestReservationsMeanSeasonDay = seasonDayReservationsMean[landCodeValue];
+            let dataOfInterestReservationsMinSeasonDay = seasonDayReservationsMin[landCodeValue];
+            let dataOfInterestReservationsMaxSeasonDay = seasonDayReservationsMax[landCodeValue];
 
+            let reservationsMeanSeasonDay = [];
+            let reservationsMinSeasonDay = [];
+            let reservationsMaxSeasonDay = [];
 
+            for (let i = 0; i < genericSeasonDayArraySorted.length; i++) {
 
+                // Mean Reservations
+                let reservationsCountMeanSeasonDay;
+                try {
+                    reservationsCountMeanSeasonDay = dataOfInterestReservationsMeanSeasonDay[genericSeasonDayArraySorted[i]]
+                } catch (TypeError) {
+                    // Handle situation where new area code is in options but no data exists yet
+                    // message = `${message}. No Mean Data for ${fullChoiceText}`
+                    // alert(`No Mean Sex (Button) Data for ${fullChoiceText}`)
+                    // break;
+                }
+                if (reservationsCountMeanSeasonDay) {
+                    reservationsMeanSeasonDay.push(reservationsCountMeanSeasonDay);
+                } else {
+                    reservationsMeanSeasonDay.push(0)
+                }
+
+                // Min Harvests
+                let reservationsCountMinSeasonDay;
+                try {
+                    reservationsCountMinSeasonDay = dataOfInterestReservationsMinSeasonDay[genericSeasonDayArraySorted[i]]
+                } catch (TypeError) {
+                    // Handle situation where new area code is in options but no data exists yet
+                    // message = `${message}. No Mean Data for ${fullChoiceText}`
+                    // alert(`No Mean Sex (Button) Data for ${fullChoiceText}`)
+                    // break;
+                }
+                if (reservationsCountMinSeasonDay) {
+                    reservationsMinSeasonDay.push(reservationsCountMinSeasonDay);
+                } else {
+                    reservationsMinSeasonDay.push(0)
+                }
+
+                // Max Harvests
+                let reservationsCountMaxSeasonDay;
+                try {
+                    reservationsCountMaxSeasonDay = dataOfInterestReservationsMaxSeasonDay[genericSeasonDayArraySorted[i]]
+                } catch (TypeError) {
+                    // Handle situation where new area code is in options but no data exists yet
+                    // message = `${message}. No Mean Data for ${fullChoiceText}`
+                    // alert(`No Mean Sex (Button) Data for ${fullChoiceText}`)
+                    // break;
+                }
+                if (reservationsCountMaxSeasonDay) {
+                    reservationsMaxSeasonDay.push(reservationsCountMaxSeasonDay);
+                } else {
+                    reservationsMaxSeasonDay.push(0)
+                }
+            };
+
+            let graphDataObjReservationsMeanMinMax = {
+                    labels: labelsSeasonDay,
+                    datasets: [
+                        
+                        {
+                            label: "Mean",
+                            data: reservationsMeanSeasonDay,
+                            fill: false,
+                            // borderColor: 'rgb(75, 192, 192)',
+                            borderColor: "black",
+                            // tension: 0.1
+                        },
+                        {
+                            label: "Min",
+                            data: reservationsMinSeasonDay,
+                            fill: false,
+                            // borderColor: "rgba(255, 255, 0, 0.8)"
+                            // backgroundColor: "rgba(255, 255, 0, 0.5)",
+                            // hidden: true,
+                            // borderColor: 'rgb(75, 192, 192)',
+                            // borderColor: "grey",
+                            // tension: 0.1 
+                        },
+                        {
+                            label: "Max",
+                            data: reservationsMaxSeasonDay,
+                            fill: "-1",
+                            backgroundColor: "rgb(98,167,108, 0.8)",
+                            // borderColor: "rgba(255, 255, 0, 0.8)"
+                            // borderColor: 'rgb(75, 192, 192)',
+                            // borderColor: "grey",
+                            // tension: 0.1 
+                        },
+
+                    ]
+                };
+            
+            let configReservationsMeanMinMax = createLineConfig(data=graphDataObjReservationsMeanMinMax, titleText="Mean/Min/Max Hunter Reservations by Season Day", displayLegend=false);
+
+            if (typeof reservationsLineChartMeanMinMax !== 'undefined' || reservationsLineChartMeanMinMax != null) {
+                reservationsLineChartMeanMinMax.destroy();
+            }
+            reservationsLineChartMeanMinMax = new Chart(
+                document.getElementById('landCodeReservationsChartMeanMinMax'),
+                configReservationsMeanMinMax
+              );
 
 
             // Zoom map to point corresponding to user choice in dropdown list
