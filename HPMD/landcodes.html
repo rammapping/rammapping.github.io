@@ -80,24 +80,33 @@
         <p id="seasonsOfData"></p>
         <p id="harvestData"></p>
     </div>
-    <div>
-        <h3>Total Deer Harvest by Sex by Season</h3>
+
+    <button type="button" class="collapsible">Total Deer Harvest by Sex by Season</button>
+    <div class="content">
+        <!-- <h3>Total Deer Harvest by Sex by Season</h3> -->
         <canvas id="landCodeHarvestChartSexBarSum" width="1000" height="300" style="border:1px solid"></canvas>
     </div>
-    <div>
-        <h3>Mean Deer Harvest by Sex by Season Day</h3>
+    
+    <button type="button" class="collapsible">Mean Deer Harvest by Sex by Season Day</button>
+    <div class="content">
+        <!-- <h3>Mean Deer Harvest by Sex by Season Day</h3> -->
         <canvas id="landCodeHarvestChartSexLineMean" width="1000" height="300" style="border:1px solid"></canvas>
     </div>
+
     <!-- <div>
         <h3>Total Deer Harvest by Season Day</h3>
         <canvas id="landCodeHarvestChartSum" width="1000" height="300" style="border:1px solid"></canvas>
     </div> -->
-    <div>
-        <h3>Mean/Min/Max Deer Harvest by Season Day</h3>
+
+    <button type="button" class="collapsible">Mean/Min/Max Deer Harvest by Season Day</button>
+    <div class="content">
+        <!-- <h3>Mean/Min/Max Deer Harvest by Season Day</h3> -->
         <canvas id="landCodeHarvestChartMeanMinMax" width="1000" height="300" style="border:1px solid"></canvas>
     </div>
-    <div>
-        <h3>Mean/Min/Max Reservations by Season Day (When Applicable)</h3>
+
+    <button type="button" class="collapsible">Mean/Min/Max Reservations by Season Day (Where Applicable)</button>
+    <div class="content">
+        <!-- <h3>Mean/Min/Max Reservations by Season Day (Where Applicable)</h3> -->
         <canvas id="landCodeReservationsChartMeanMinMax" width="1000" height="300" style="border:1px solid"></canvas>
     </div>
 
@@ -153,6 +162,22 @@
         function onLocationError(e) {
             alert(e.message);
         }
+
+        // Straight from W3 Schools https://www.w3schools.com/howto/tryit.asp?filename=tryhow_js_collapsible
+        var coll = document.getElementsByClassName("collapsible");
+        var i;
+        for (i = 0; i < coll.length; i++) {
+            coll[i].addEventListener("click", function() {
+                this.classList.toggle("active");
+                var content = this.nextElementSibling;
+                if (content.style.display === "block") {
+                content.style.display = "none";
+                } else {
+                content.style.display = "block";
+                }
+            });
+        }
+
 
         const urlEvaluator = (url, text) => url ? text : "Nothing";
         const defaultPointLocation = [39.23, -77];
@@ -738,4 +763,7 @@
     </script>
 
 </body>
+<footer class="footer">
+    &copy; Copyright 2022 RAM Mapping<br>
+</footer>
 </html>

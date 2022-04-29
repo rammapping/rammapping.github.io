@@ -36,3 +36,35 @@
 #basemaps {
   margin-bottom: 5px;
   }
+
+/* For the collapsable functionality */
+.collapsible {
+  background-color: rgb(205, 203, 203);
+  /* color: white; */
+  cursor: pointer;
+  padding: 18px;
+  width: 100%;
+  border: solid 1px;
+  /* border-style: solid; */
+  text-align: left;
+  outline: none;
+  font-size: 20px;
+}
+
+.active, .collapsible:hover {
+  background-color: rgb(159, 159, 159);
+}
+
+.content {
+  padding: 0 18px;
+  display: none;
+  overflow: hidden;
+  /* background-color: #f1f1f1; */
+}
+
+.footer {
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  text-align: center;
+}
