@@ -60,7 +60,10 @@
     </div>
 
     <div>
-        <p><a href="huntLocations.html" target="_blank">Full Page Map</a></p>
+        <p>
+            <a href="../index.html">Home</a>
+            <!-- <a href="huntLocations.html" target="_blank">Full Page Map</a> -->
+        </p>
     </div>
     <div id="mapid">
         <div id="basemaps-wrapper" class="leaflet-bar">
@@ -73,23 +76,17 @@
             </select>
         </div>
     </div>
-    
-
     <div>
-        <h2 id="focusArea"></h2>
         <p id="seasonsOfData"></p>
-        <p id="harvestData"></p>
     </div>
 
     <button type="button" class="collapsible">Total Deer Harvest by Sex by Season</button>
     <div class="content">
-        <!-- <h3>Total Deer Harvest by Sex by Season</h3> -->
         <canvas id="landCodeHarvestChartSexBarSum" width="1000" height="300" style="border:1px solid"></canvas>
     </div>
     
     <button type="button" class="collapsible">Mean Deer Harvest by Sex by Season Day</button>
     <div class="content">
-        <!-- <h3>Mean Deer Harvest by Sex by Season Day</h3> -->
         <canvas id="landCodeHarvestChartSexLineMean" width="1000" height="300" style="border:1px solid"></canvas>
     </div>
 
@@ -100,13 +97,11 @@
 
     <button type="button" class="collapsible">Mean/Min/Max Deer Harvest by Season Day</button>
     <div class="content">
-        <!-- <h3>Mean/Min/Max Deer Harvest by Season Day</h3> -->
         <canvas id="landCodeHarvestChartMeanMinMax" width="1000" height="300" style="border:1px solid"></canvas>
     </div>
 
     <button type="button" class="collapsible">Mean/Min/Max Reservations by Season Day (Where Applicable)</button>
     <div class="content">
-        <!-- <h3>Mean/Min/Max Reservations by Season Day (Where Applicable)</h3> -->
         <canvas id="landCodeReservationsChartMeanMinMax" width="1000" height="300" style="border:1px solid"></canvas>
     </div>
 
@@ -128,7 +123,6 @@
             } else {
                 layer = L.esri.basemapLayer(basemap);
             }
-            // layer = L.esri.basemapLayer(basemap);
 
             map.addLayer(layer);
 
@@ -164,12 +158,12 @@
         }
 
         // Straight from W3 Schools https://www.w3schools.com/howto/tryit.asp?filename=tryhow_js_collapsible
-        var coll = document.getElementsByClassName("collapsible");
-        var i;
-        for (i = 0; i < coll.length; i++) {
-            coll[i].addEventListener("click", function() {
+        let coll = document.getElementsByClassName("collapsible");
+        let iCollapse;
+        for (iCollapse = 0; iCollapse < coll.length; iCollapse++) {
+            coll[iCollapse].addEventListener("click", function() {
                 this.classList.toggle("active");
-                var content = this.nextElementSibling;
+                let content = this.nextElementSibling;
                 if (content.style.display === "block") {
                 content.style.display = "none";
                 } else {
@@ -209,12 +203,10 @@
                 return L.circleMarker(latlng, markerStyle);
             },
             onEachFeature: function (feature, layer) {
-                // console.log(urlEvaluator(feature.properties.URL1, "Link 1"))
                 layer.bindPopup(
                     '<h1>' + feature.properties.GuideName1 + '</h1>' +
                     '<h4>' + feature.properties.GuideName2 + '</h4>' +
                     '<p>' + feature.properties.Information + '</p>' +
-                    // '<p>COUNTY: ' + feature.properties.County + '</p>' +
                     '<h3>LAND CODE(s): ' + feature.properties.LandCode + '</h3>' +
                     '<h4><a href=' + feature.properties.URL1 + ' target="_blank">' + urlEvaluator(feature.properties.URL1, "Link 1") + '</href></h4>' +
                     '<h4><a href=' + feature.properties.URL2 + ' target="_blank">' + urlEvaluator(feature.properties.URL2, "Link 2") + '</href></h4>' +
@@ -278,7 +270,7 @@
         let harvestLineChartMeanMinMax = new Chart(document.getElementById('landCodeHarvestChartMeanMinMax'), createLineConfig(data={}, titleText="Mean/Min/Max Deer Harvest by Season Day"), displayLegend=false); // Needs to be in namespace before function acts on it
         let harvestBarChartSexSum = new Chart(document.getElementById('landCodeHarvestChartSexBarSum'), createBarConfig(data={}, titleText="Total Deer Harvest by Sex by Season")); // Needs to be in namespace before function acts on it
         let harvestLineChartSexMean = new Chart(document.getElementById('landCodeHarvestChartSexLineMean'), createLineConfig(data={}, titleText="Mean Deer Harvest by Sex by Season Day")); // Needs to be in namespace before function acts on it
-        let reservationsLineChartMeanMinMax = new Chart(document.getElementById('landCodeReservationsChartMeanMinMax'), createLineConfig(data={}, titleText="Mean/Min/Max Hunter Reservations by Season Day"), displayLegend=false); // Needs to be in namespace before function acts on it
+        let reservationsLineChartMeanMinMax = new Chart(document.getElementById('landCodeReservationsChartMeanMinMax'), createLineConfig(data={}, titleText="Mean/Min/Max Hunter Reservations by Season Day", displayLegend=false, yLabelText="Reservations")); // Needs to be in namespace before function acts on it
 
         function updatePageWithUserChosenCode(fullChoiceText, landCodeValue) {
             // TODO: Break this function into many smaller focussed functions
@@ -730,7 +722,7 @@
                     ]
                 };
             
-            let configReservationsMeanMinMax = createLineConfig(data=graphDataObjReservationsMeanMinMax, titleText="Mean/Min/Max Hunter Reservations by Season Day", displayLegend=false);
+            let configReservationsMeanMinMax = createLineConfig(data=graphDataObjReservationsMeanMinMax, titleText="Mean/Min/Max Hunter Reservations by Season Day", displayLegend=false, yLabelText="Reservations");
 
             if (typeof reservationsLineChartMeanMinMax !== 'undefined' || reservationsLineChartMeanMinMax != null) {
                 reservationsLineChartMeanMinMax.destroy();

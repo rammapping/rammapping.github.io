@@ -16,7 +16,7 @@ function assembleLineDataObj(labels, labelText, graphData, border) {
 }
 
 
-function createLineConfig(data={}, titleText="No Title", displayLegend=true) {
+function createLineConfig(data={}, titleText="No Title", displayLegend=true, yLabelText="Harvests") {
     let config = {
           type: 'line',
           data: data,
@@ -50,7 +50,7 @@ function createLineConfig(data={}, titleText="No Title", displayLegend=true) {
                   display: true,
                   title: {
                     display: true,
-                    text: 'Harvests'
+                    text: yLabelText
                   }
                 }
               },

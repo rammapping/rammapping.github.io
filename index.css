@@ -4,19 +4,21 @@ table {
     width: 100%;
   }
   
-  td, th {
-    border: 1px solid #dddddd;
-    text-align: left;
-    padding: 8px;
-  }
-  
-  tr:nth-child(even) {
-    background-color: #dddddd;
-  }
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
 
-  .footer {
-    left: 0;
-    bottom: 0;
-    width: 100%;
-    text-align: center;
-  }
+tr:nth-child(even) {
+  background-color: #dddddd;
+}
+
+.footer {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  text-align: center;
+  padding: 3px;
+}
