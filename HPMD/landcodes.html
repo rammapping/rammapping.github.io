@@ -218,7 +218,7 @@
                     '<h1>' + feature.properties.GuideName1 + '</h1>' +
                     '<h4>' + feature.properties.GuideName2 + '</h4>' +
                     '<p>' + feature.properties.Information + '</p>' +
-                    '<h3>LAND CODE(s): ' + feature.properties.LandCode + '</h3>' +
+                    '<h3> LAND CODE(s): <a href="#" onclick="getLandCodeValueFromPopup()" id="landCodePopupText">' + feature.properties.LandCode + '</a></h3>' +  
                     '<h4><a href=' + feature.properties.URL1 + ' target="_blank">' + urlEvaluator(feature.properties.URL1, "Link 1") + '</href></h4>' +
                     '<h4><a href=' + feature.properties.URL2 + ' target="_blank">' + urlEvaluator(feature.properties.URL2, "Link 2") + '</href></h4>' +
                     '<h4><a href=' + feature.properties.URL_MAP + ' target="_blank">' + urlEvaluator(feature.properties.URL_MAP, "Map") + '</href></h4> '
@@ -234,6 +234,9 @@
                       }
                   );
         
+        // let landCodePopupText = document.getElementById("landCodePopupText")
+        // landCodePopupText.onclick()
+
         let huntSpotFeatures = huntingSpotsGeojson["features"]
         let huntSpotInventory = {}
         for (let i = 0; i < huntSpotFeatures.length; i++) {
@@ -257,8 +260,8 @@
             
         }
 
-        // Build the choices for the drop down list, from the landcodes json
-        let text = "<select id='landCodeDropDown'>"
+        // Build the choices for the drop down list, from the landcodes json. Start with disabled instruction option
+        let text = "<select id='landCodeDropDown'><option value='' selected disabled>Please select an option...</option>"
         for (let i = 0; i < landCodes.length; i++) {
             let obj = landCodes[i]
             let name = obj["Name"]
@@ -754,6 +757,23 @@
             map.setView(locationArray, zoomLevel, {animation: true});            
         }
 
+        // Need function to get the users choice of land code from the pop-up and manipulate dynamic elements
+        function getLandCodeValueFromPopup() {
+            let popupLandCodeLinkElement = document.getElementById("landCodePopupText");
+            let selectedText = "not needed";
+            let selectedValue = popupLandCodeLinkElement.innerHTML.split(";")[0]; // Sometimes there are two values separated by a semi-colon
+            // document.getElementById("landCodeDropDown").selectedValue = selectedValue;  // doesn't work like i want
+            updatePageWithUserChosenCode(selectedText, selectedValue)
+            for (let i = 0; i < landCodes.length; i++) {
+                let obj = landCodes[i]
+                let code = obj["LandCode"]
+                if (code == selectedValue) {
+                    document.getElementById("landCodeDropDown").selectedIndex = i + 1; // +1 because first option is disabled statement option
+                    break
+                }
+            }
+
+        }
         // Need function to get the users choice of land code from the drop down and manipulate dynamic elements
         function getLandCodeValue() {
             let dropDownElement = document.getElementById("landCodeDropDown");
