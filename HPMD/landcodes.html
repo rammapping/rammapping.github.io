@@ -27,6 +27,9 @@
     <script src="HarvestsBySexPerLandCodeBySeasonSUM_NoAntlers_Web.js"></script>
     <script src="HarvestsBySexPerLandCodeBySeasonSUM_Button_Web.js"></script>
     
+    <script src="HarvestsBySpeciesPerLandCodeBySeasonSUM_Sika Deer_Web.js"></script>
+    <script src="HarvestsBySpeciesPerLandCodeBySeasonSUM_White-Tailed Deer_Web.js"></script>
+
     <script src="HarvestsBySexPerLandCodeBySeasonDayMEAN_Antlers_Web.js"></script>
     <script src="HarvestsBySexPerLandCodeBySeasonDayMEAN_NoAntlers_Web.js"></script>
     <script src="HarvestsBySexPerLandCodeBySeasonDayMEAN_Button_Web.js"></script>
@@ -99,6 +102,11 @@
     <button type="button" class="collapsible">Mean Deer Harvest by Sex by Season Day</button>
     <div class="content">
         <canvas id="landCodeHarvestChartSexLineMean" width="1000" height="300" style="border:1px solid"></canvas>
+    </div>
+
+    <button type="button" class="collapsible">Total Deer Harvest by Species by Season</button>
+    <div class="content">
+        <canvas id="landCodeHarvestChartSpeciesBarSum" width="1000" height="300" style="border:1px solid"></canvas>
     </div>
 
     <!-- <div>
@@ -284,6 +292,8 @@
         let harvestLineChartMeanMinMax = new Chart(document.getElementById('landCodeHarvestChartMeanMinMax'), createLineConfig(data={}, titleText="Mean/Min/Max Deer Harvest by Season Day"), displayLegend=false); // Needs to be in namespace before function acts on it
         let harvestBarChartSexSum = new Chart(document.getElementById('landCodeHarvestChartSexBarSum'), createBarConfig(data={}, titleText="Total Deer Harvest by Sex by Season")); // Needs to be in namespace before function acts on it
         let harvestLineChartSexMean = new Chart(document.getElementById('landCodeHarvestChartSexLineMean'), createLineConfig(data={}, titleText="Mean Deer Harvest by Sex by Season Day")); // Needs to be in namespace before function acts on it
+        let harvestBarChartSpeciesSum = new Chart(document.getElementById('landCodeHarvestChartSpeciesBarSum'), createBarConfig(data={}, titleText="Total Deer Harvest by Species by Season")); // Needs to be in namespace before function acts on it
+        
         let reservationsLineChartMeanMinMax = new Chart(document.getElementById('landCodeReservationsChartMeanMinMax'), createLineConfig(data={}, titleText="Mean/Min/Max Hunter Reservations by Season Day", displayLegend=false, yLabelText="Reservations")); // Needs to be in namespace before function acts on it
 
         function updatePageWithUserChosenCode(fullChoiceText, landCodeValue) {
@@ -302,6 +312,8 @@
             const colorFemaleAntlerlessMale = "#ff5393";
             const colorMale = "#2986cc";
             const colorButtonbuck = "#9fc5e8";
+            const colorSikaDeer = "DarkGoldenRod";
+            const colorWhitetailDeer = "DarkOliveGreen";
 
             // Number of seasons of data for land code of interest
             try {
@@ -527,10 +539,57 @@
                 document.getElementById('landCodeHarvestChartSexLineMean'),
                 configSexMean
               );
-            
-            
-            // Mean/Min/Max Harvest by Season Day by Landcode, Line Chart
 
+
+            // Total Harvests by Species by Season, Stacked Bar Chart
+            let dataBarSika = [];
+            let dataBarWhitetail = [];
+
+            let seasonsSikaObjBar = seasonsHarvestsSpeciesSikaSum[landCodeValue]
+            let seasonsWhitetailObjBar = seasonsHarvestsSpeciesWhitetailSum[landCodeValue]
+
+            for (let i = 0; i < genericSeasonsArraySorted.length; i++) {
+                let seasonFocus = genericSeasonsArraySorted[i]
+
+                try {
+                    dataBarSika.push(seasonsSikaObjBar[seasonFocus])
+                } catch {
+                    dataBarSika.push(0)
+                }
+                try {
+                    dataBarWhitetail.push(seasonsWhitetailObjBar[seasonFocus])
+                } catch {
+                    dataBarWhitetail.push(0)
+                }
+                
+            }
+
+            let barChartSpeciesDatasetsArray = [{
+                    label: 'Sika',
+                    data: dataBarSika,
+                    backgroundColor: colorSikaDeer,
+                    },
+                    {
+                    label: 'White-Tailed',
+                    data: dataBarWhitetail,
+                    backgroundColor: colorWhitetailDeer,
+                    },
+                    ]
+
+            let dataSpeciesBar = assembleBarDataObj(labels=labelsSeasons, dataSetsArray=barChartSpeciesDatasetsArray)
+
+            const configSpeciesBar = createBarConfig(data=dataSpeciesBar, titleText='Total Deer Harvest by Species by Season')
+
+            if (typeof harvestBarChartSpeciesSum !== 'undefined' || harvestBarChartSpeciesSum != null) {
+                harvestBarChartSpeciesSum.destroy();
+            }
+            harvestBarChartSpeciesSum = new Chart(
+                document.getElementById('landCodeHarvestChartSpeciesBarSum'),
+                configSpeciesBar,
+              );
+            
+
+            // Mean/Min/Max Harvest by Season Day by Landcode, Line Chart
             let dataOfInterestHarvestsMeanSeasonDay = seasonDayHarvestsMean[landCodeValue];
             let dataOfInterestHarvestsMinSeasonDay = seasonDayHarvestsMin[landCodeValue];
             let dataOfInterestHarvestsMaxSeasonDay = seasonDayHarvestsMax[landCodeValue];
