@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Deer HART Antlers</title>
+    <link rel="stylesheet" type="text/css" href="landcodes.css"/>
+    <script src="landcodes.js"></script>
+
+</head>
+<body>
+    <div id="headerInfo">
+        <h2>Choose the area of interest and click Submit</h2>
+
+        <p id="landCodeChooser"></p>
+        <input type="button" value="Submit" onclick="getLandCodeValue()" />
+    </div>
+
+    <div>
+        <p>
+            <a href="../index.html">Home</a>
+        </p>
+        
+    </div>
+    <button type="button" class="collapsible">What is the distribution of antler points and buck harvests?</button>
+    <div class="contentImg">
+        <img id="antlersHistLandCode" src="antlerSmall.png" alt="">
+    </div>
+
+    <button type="button" class="collapsible">What is the distribution of antler points and buck harvests by Weapon Type each Season?</button>
+    <div class="contentImg">
+        <img id="antlersWeaponSeasonCountLandCode" src="antlerSmall.png" alt="">
+    </div>
+
+    <button type="button" class="collapsible">What is the distribution of antler points and buck harvests by Weekday each Season?</button>
+    <div class="contentImg">
+        <img id="antlersWeekdaySeasonCountLandCode" src="antlerSmall.png" alt="">
+    </div>
+    <button type="button" class="collapsible">What is the distribution of antler points by Season?</button>
+    <div class="contentImg">
+        <img id="antlersSeasonBox" src="antlerSmall.png" alt="">
+    </div>
+
+    <button type="button" class="collapsible">What is the distribution of antler points by Weekday?</button>
+    <div class="contentImg">
+        <img id="antlersWeekdayBox" src="antlerSmall.png" alt="">
+    </div>
+    
+    <button type="button" class="collapsible">What is the distribution of antler points by Weapon Type?</button>
+    <div class="contentImg">
+        <img id="antlersWeaponBox" src="antlerSmall.png" alt="">
+    </div>
+    
+    <button type="button" class="collapsible">What is the distribution of antler points by Week Number?</button>
+    <div class="contentImg">
+        <img id="antlersWeekNumberBox" src="antlerSmall.png" alt="">
+    </div>
+
+    <button type="button" class="collapsible">What is the distribution of antler points by Season Day?</button>
+    <div class="contentImg">
+        <img id="antlersSeasonDayBox" src="antlerSmall.png" alt="">
+    </div>
+    <p>*Red line in box plots represents the median value</p>
+    
+    <script>
+
+        // Build the choices for the drop down list, from the landcodes json. Start with disabled instruction option
+        let text = "<select id='landCodeDropDown'><option value='' selected disabled>Please select an option...</option>"
+        for (let i = 0; i < landCodes.length; i++) {
+            let obj = landCodes[i]
+            let name = obj["Name"]
+            let code = obj["LandCode"]
+            text += `<option value=${code}>` + `${code} - ${name}`
+        }
+        text += "</select>"
+        document.getElementById("landCodeChooser").innerHTML = text;
+
+        function updatePageWithUserChosenCode(fullChoiceText, landCodeValue) {
+            document.getElementById("antlersHistLandCode").src = `AntlerPoints/${landCodeValue}_PointsHist.png`;
+            document.getElementById("antlersWeaponSeasonCountLandCode").src = `AntlerPoints/${landCodeValue}_PointsWeaponSeasonCount.png`;
+            document.getElementById("antlersWeekdaySeasonCountLandCode").src = `AntlerPoints/${landCodeValue}_PointsWeekdaySeasonCount.png`;
+            document.getElementById("antlersSeasonBox").src = `AntlerPoints/${landCodeValue}_PointsSeasonBox.png`;
+            document.getElementById("antlersWeekdayBox").src = `AntlerPoints/${landCodeValue}_PointsWeekdayBox.png`;
+            document.getElementById("antlersWeaponBox").src = `AntlerPoints/${landCodeValue}_PointsWeaponBox.png`;
+            document.getElementById("antlersWeekNumberBox").src = `AntlerPoints/${landCodeValue}_PointsWeekNumberBox.png`;
+            document.getElementById("antlersSeasonDayBox").src = `AntlerPoints/${landCodeValue}_PointsSeasonDayBox.png`;
+
+        }
+
+        // Need function to get the users choice of land code from the drop down and manipulate dynamic elements
+        function getLandCodeValue() {
+            let dropDownElement = document.getElementById("landCodeDropDown");
+            let selectedText = dropDownElement.options[dropDownElement.selectedIndex].innerHTML;
+            let selectedValue = dropDownElement.value;
+            updatePageWithUserChosenCode(selectedText, selectedValue)
+        }
+        
+        // Straight from W3 Schools https://www.w3schools.com/howto/tryit.asp?filename=tryhow_js_collapsible
+        let coll = document.getElementsByClassName("collapsible");
+        let iCollapse;
+        for (iCollapse = 0; iCollapse < coll.length; iCollapse++) {
+            coll[iCollapse].addEventListener("click", function() {
+                this.classList.toggle("active");
+                let content = this.nextElementSibling;
+                if (content.style.display === "block") {
+                content.style.display = "none";
+                } else {
+                content.style.display = "block";
+                }
+            });
+        }
+
+    </script>
+
+
+</body>
