@@ -29,6 +29,7 @@
     
     <script src="HarvestsBySpeciesPerLandCodeBySeasonSUM_Sika Deer_Web.js"></script>
     <script src="HarvestsBySpeciesPerLandCodeBySeasonSUM_White-Tailed Deer_Web.js"></script>
+    <script src="HarvestsPercentbySpeciesPerLandcode_Web.js"></script>
 
     <script src="HarvestsBySexPerLandCodeBySeasonDayMEAN_Antlers_Web.js"></script>
     <script src="HarvestsBySexPerLandCodeBySeasonDayMEAN_NoAntlers_Web.js"></script>
@@ -92,6 +93,7 @@
     </div>
     <div>
         <p id="seasonsOfData"></p>
+        <h4 id="speciesPresentKPI"></h4>
     </div>
 
     <button type="button" class="collapsible">Total Deer Harvest by Sex by Season</button>
@@ -330,6 +332,21 @@
                 document.getElementById("seasonsOfData").innerHTML = `*Mean values based on ${numSeasons} seasons of data.`// (${minSeason} to ${maxSeason})`;
             }
 
+            // Species harvest ratio for land code of interest
+            let percentSika;
+            let percentWhitetail;
+            try {
+                speciesData = landcodeSpeciesHarvestPercent[landCodeValue]
+            } catch (TypeError) {
+                percentSika = 0;
+                percentWhitetail = 0;
+            }
+            finally {         
+                percentSika = speciesData["s"]
+                percentWhitetail = speciesData["w"]     
+                document.getElementById("speciesPresentKPI").innerHTML = `Whitetail ${percentWhitetail}%  -  Sika ${percentSika}%`
+            }
+
 
             // Single-Line Chart Based on Season Day
             let labelsSeasonDay = genericSeasonDayArraySorted; // ASSESS: why do this reassignment??
@@ -563,9 +580,6 @@
                 }
                 
             }
-            // TODO: Add a Sika v Whitetail percentage stat with the data built here.
-
-
             let barChartSpeciesDatasetsArray = [{
                     label: 'Sika',
                     data: dataBarSika,
@@ -585,11 +599,18 @@
             if (typeof harvestBarChartSpeciesSum !== 'undefined' || harvestBarChartSpeciesSum != null) {
                 harvestBarChartSpeciesSum.destroy();
             }
-            harvestBarChartSpeciesSum = new Chart(
-                document.getElementById('landCodeHarvestChartSpeciesBarSum'),
-                configSpeciesBar,
-              );
-            
+
+            // If harvests are all one species then don't show the chart, it's pointless and just matches the total by sex bar chart.
+            if (percentSika == 0 || percentWhitetail == 0) {
+                document.getElementById('landCodeHarvestChartSpeciesBarSum').style.display = "none"
+            } else {
+                document.getElementById('landCodeHarvestChartSpeciesBarSum').style.display = "block"
+
+                harvestBarChartSpeciesSum = new Chart(
+                    document.getElementById('landCodeHarvestChartSpeciesBarSum'),
+                    configSpeciesBar,
+                );
+            }
 
             // Mean/Min/Max Harvest by Season Day by Landcode, Line Chart
             let dataOfInterestHarvestsMeanSeasonDay = seasonDayHarvestsMean[landCodeValue];
