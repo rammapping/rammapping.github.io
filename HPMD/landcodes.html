@@ -106,7 +106,7 @@
         <canvas id="landCodeHarvestChartSexLineMean" width="1000" height="300" style="border:1px solid"></canvas>
     </div>
 
-    <button type="button" class="collapsible">Total Deer Harvest by Species by Season</button>
+    <button type="button" id="speciesButton" class="collapsible">Total Deer Harvest by Species by Season</button>
     <div class="content">
         <canvas id="landCodeHarvestChartSpeciesBarSum" width="1000" height="300" style="border:1px solid"></canvas>
     </div>
@@ -121,7 +121,7 @@
         <canvas id="landCodeHarvestChartMeanMinMax" width="1000" height="300" style="border:1px solid"></canvas>
     </div>
 
-    <button type="button" class="collapsible">Mean/Min/Max Reservations by Season Day (Where Applicable)</button>
+    <button type="button" id="reservationsButton" class="collapsible">Mean/Min/Max Reservations by Season Day</button>
     <div class="content">
         <canvas id="landCodeReservationsChartMeanMinMax" width="1000" height="300" style="border:1px solid"></canvas>
     </div>
@@ -603,8 +603,11 @@
             // If harvests are all one species then don't show the chart, it's pointless and just matches the total by sex bar chart.
             if (percentSika == 0 || percentWhitetail == 0) {
                 document.getElementById('landCodeHarvestChartSpeciesBarSum').style.display = "none"
+                document.getElementById('speciesButton').style.display = "none"
+                
             } else {
-                document.getElementById('landCodeHarvestChartSpeciesBarSum').style.display = "block"
+                document.getElementById('landCodeHarvestChartSpeciesBarSum').style.display = "initial"
+                document.getElementById('speciesButton').style.display = "initial"
 
                 harvestBarChartSpeciesSum = new Chart(
                     document.getElementById('landCodeHarvestChartSpeciesBarSum'),
@@ -725,7 +728,7 @@
             let dataOfInterestReservationsMeanSeasonDay = seasonDayReservationsMean[landCodeValue];
             let dataOfInterestReservationsMinSeasonDay = seasonDayReservationsMin[landCodeValue];
             let dataOfInterestReservationsMaxSeasonDay = seasonDayReservationsMax[landCodeValue];
-
+            
             let reservationsMeanSeasonDay = [];
             let reservationsMinSeasonDay = [];
             let reservationsMaxSeasonDay = [];
@@ -742,6 +745,7 @@
                     // alert(`No Mean Sex (Button) Data for ${fullChoiceText}`)
                     // break;
                 }
+
                 if (reservationsCountMeanSeasonDay) {
                     reservationsMeanSeasonDay.push(reservationsCountMeanSeasonDay);
                 } else {
@@ -780,7 +784,7 @@
                     reservationsMaxSeasonDay.push(0)
                 }
             };
-
+            
             let graphDataObjReservationsMeanMinMax = {
                     labels: labelsSeasonDay,
                     datasets: [
@@ -823,11 +827,20 @@
             if (typeof reservationsLineChartMeanMinMax !== 'undefined' || reservationsLineChartMeanMinMax != null) {
                 reservationsLineChartMeanMinMax.destroy();
             }
-            reservationsLineChartMeanMinMax = new Chart(
-                document.getElementById('landCodeReservationsChartMeanMinMax'),
-                configReservationsMeanMinMax
-              );
 
+             // If harvests are all one species then don't show the chart, it's pointless and just matches the total by sex bar chart.
+             if ( typeof dataOfInterestReservationsMeanSeasonDay == 'undefined') {
+                document.getElementById('landCodeReservationsChartMeanMinMax').style.display = "none"
+                document.getElementById('reservationsButton').style.display = "none"
+                
+            } else {
+                document.getElementById('landCodeReservationsChartMeanMinMax').style.display = "initial"
+                document.getElementById('reservationsButton').style.display = "initial"
+                reservationsLineChartMeanMinMax = new Chart(
+                    document.getElementById('landCodeReservationsChartMeanMinMax'),
+                    configReservationsMeanMinMax
+                );
+            }
 
             // Zoom map to point corresponding to user choice in dropdown list
             let locationArray = huntSpotInventory[landCodeValue];
