@@ -92,12 +92,11 @@
         </div>
     </div>
 
-    <h3>All Harvests</h3>
     <div>
         <p id="seasonsOfData"></p>
         <p id="speciesPresentKPI"></p>
     </div>
-
+    <h3>All Harvests</h3>
     <button type="button" class="collapsible">Total Harvests by Sex by Season</button>
     <div class="content">
         <canvas id="landCodeHarvestChartSexBarSum" width="1000" height="300" style="border:1px solid"></canvas>
@@ -132,8 +131,8 @@
         <img id="harvestsWeaponBarLandCode" src="antlerSmall.png" alt="">
     </div>
 
-    <h3>Antlered Harvests</h3>    
-    <button type="button" class="collapsible">Distribution of antler points (rack size) per harvest?</button>
+    <h3>Antlered Harvests</h3>
+    <button type="button" class="collapsible">Distribution of antler points per harvest</button>
     <div class="contentImg">
         <img id="antlersHistLandCode" src="antlerSmall.png" alt="">
     </div>
@@ -141,7 +140,21 @@
     <div class="contentImg">
         <img id="harvestsWeekdaySeasonCountLandCode" src="antlerSmall.png" alt="">
     </div>
-
+    <button type="button" class="collapsible">Distribution of antler points & buck harvests by Season</button>
+    <div class="contentImg">
+        <img id="antlersSeasonBox" src="antlerSmall.png" alt="">
+        <img id="antlersSeasonHeat" src="antlerSmall.png" alt="">
+    </div>
+    <button type="button" class="collapsible">Distribution of antler points & buck harvests by Weekday</button>
+    <div class="contentImg">
+        <img id="antlersWeekdayBox" src="antlerSmall.png" alt="">
+        <img id="antlersWeekdayHeat" src="antlerSmall.png" alt="">
+    </div>
+    <p>*Red line in box plots represents the median value</p>
+    <p>Box plots & Heatmaps show the same data but we like to see both.</p>
+    <p>"Antler points" means the bucks rack size. For example an 8 point.</p>
+    <p><a href="https://www.khanacademy.org/math/statistics-probability/summarizing-quantitative-data/box-whisker-plots/a/box-plot-review" target="_blank">Example Box Plots explanation</a></p>
+    
 
     <script>
         // Learned that this code has to follow the element being acted on, can't be before the element is declared.
@@ -324,6 +337,10 @@
             document.getElementById("antlersHistLandCode").src = `AntlerPoints/PointsHist_${landCodeValue}.png`;
             document.getElementById("harvestsWeaponBarLandCode").src = `GeneralHarvests/HarvestsWeaponSeasonCount_${landCodeValue}.png`;
             document.getElementById("harvestsWeekdaySeasonCountLandCode").src = `AntlerPoints/HarvestsWeekdaySeasonCount_${landCodeValue}.png`;
+            document.getElementById("antlersSeasonBox").src = `AntlerPoints/PointsSeasonBox_${landCodeValue}.png`;
+            document.getElementById("antlersSeasonHeat").src = `AntlerPoints/PointsSeasonHeat_${landCodeValue}.png`; // I think should be HarvestsSeasonHeat_
+            document.getElementById("antlersWeekdayBox").src = `AntlerPoints/PointsWeekdayBox_${landCodeValue}.png`;
+            document.getElementById("antlersWeekdayHeat").src = `AntlerPoints/PointsWeekdayHeat_${landCodeValue}.png`; // i think should be HarvestsWeekdayHeat_
 
 
             // Getting the number of seasons of data and setting element values
