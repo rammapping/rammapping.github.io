@@ -66,7 +66,7 @@
         window.onload = function(){
             document.getElementById('todayDate').innerHTML = `Today: ${todayDateBasic.toLocaleDateString()}`;
             document.getElementById('season').innerHTML = `Season: ${seasonString}`;
-            // document.getElementById('seasonStart').innerHTML = `Season Start: ${startDateFromMillis.toLocaleDateString()}`;
+            document.getElementById('seasonStart').innerHTML = `Season Start: ${startDateFromMillis.toLocaleDateString()}`;
             // document.getElementById('seasonEnd').innerHTML = `Season End: ${endDateBasic.toLocaleDateString()}`;
             document.getElementById('seasonDay').innerHTML = `Season Day: ${deerSeasonDay()}`;
 
@@ -76,40 +76,55 @@
     </script>
 </head>
 <body>
+    <header>
+        <div>
+            <table id="infoTable">
+                <tr>
+                    <!-- <th></th> -->
+                </tr>
+                <tr>
+                    <th><a href="About.html">About RAM & HART</a></th>
+                    <th><a href="Tips.html">Tips & FAQ</a></th>
+                    <th><a href="Feedback.html">Feedback</a></th>
 
+                    <!-- <th><a href="HPMD/huntLocations.html" target="_blank">Locations Map Only</a></th> -->
+                </tr>
+            </table>
+            <!-- <h2>Harvested Animals Research Tool (HART)</h2> -->
+        </div>
+        <div id="hpmdHeader">
+            <h1 id="hpmdHeaderText">Hunting Public Maryland Resources</h1>
+        </div>
+        <hr>
+    </header>
+    <!-- <hr> -->
     <div>
-        <table id="infoTable">
-            <tr>
-                <!-- <th></th> -->
-            </tr>
-            <tr>
-                <th><a href="About.html">About</a></th>
-                <th><a href="Tips.html">Tips & FAQ</a></th>
-                <th><a href="Feedback.html">Feedback</a></th>
-
-                <!-- <th><a href="HPMD/huntLocations.html" target="_blank">Locations Map Only</a></th> -->
-            </tr>
-        </table>
-        <!-- <h2>Harvested Animals Research Tool (HART)</h2> -->
-    </div>
-    <div>
-        <h1>Hunting Public Maryland Resources - Harvested Animals Research Tool (HART)</h1>
         <h2><a href="HPMD/landcodes.html">Deer HART</a></h2>
-    </div>
-    <div>
-        <h4>RAM Deer Season Stats</h4>
+        <h3>RAM Deer Season Stats</h3>
+        <ul>
+            <!-- <li id="seasonEnd"></li> -->
+            <li id="season"></li>
+            <li id="seasonStart"></li>
+        </ul>
         <ul>
             <li id="todayDate"></li>
-            <li id="season"></li>
-            <!-- <li id="seasonStart"></li> -->
-            <!-- <li id="seasonEnd"></li> -->
             <li id="seasonDay"></li>
-            <p>** Thanksgiving day is "Season Day" zero (0). See the Tips page for more on this.</p>
         </ul>
+        <p>** Thanksgiving day is "Season Day" zero (0). See the Tips page for more on this.</p>
+
+
 
     </div>
-
-    <a href="Disclaimer.html">DISCLAIMER</a>
+    <hr>
+    <div>
+        <p>HART... Harvested Animals Research Tool</p>
+        <p>The information in map popups is based on <a href="https://www.eregulations.com/assets/docs/guides/21MDHD.pdf" target="_blank">2021-2022 DNR Hunting Guide</a></p></div>
+    </div>
+    <!-- <hr> -->
+    <div>
+        <a href="Disclaimer.html">DISCLAIMER</a>
+    </div>
+    
 </body>
 <footer class="footer">
     &copy; Copyright 2022 RAM Mapping<br>

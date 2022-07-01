@@ -1,13 +1,21 @@
+header {
+  /* background-color: darkseagreen; */
+  background-color: rgb(143, 188, 143, 50%);
+}
+#hpmdHeader {
+  text-align: center;
+}
 table {
     font-family: arial, sans-serif;
     border-collapse: collapse;
+    border-color: None;
     width: 100%;
   }
   
 td, th {
   border: 1px solid #dddddd;
   text-align: left;
-  padding: 8px;
+  padding: 5px;
 }
 
 /* tr:nth-child(even) { */
