@@ -8,13 +8,14 @@ header {
 table {
     font-family: arial, sans-serif;
     border-collapse: collapse;
-    border-color: None;
+    /* border-color: black; */
+    table-layout: fixed;
     width: 100%;
   }
   
 td, th {
-  border: 1px solid #dddddd;
-  text-align: left;
+  border: None;
+  text-align: center;
   padding: 5px;
 }
 
