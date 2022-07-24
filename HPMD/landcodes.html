@@ -95,6 +95,7 @@
     <div>
         <p id="seasonsOfData"></p>
         <p id="speciesPresentKPI"></p>
+        <p id="acreageKPI"></p>
     </div>
     <h3>All Harvests</h3>
     <button type="button" class="collapsible">Total Harvests by Sex by Season</button>
@@ -223,7 +224,7 @@
 
 
         const urlEvaluator = (url, text) => url ? text : "Nothing";
-        const defaultPointLocation = [39.23, -77];
+        const defaultPointLocation = [38.85, -77];
         const defaultZoom = 8;
         let map = L.map('mapid').setView(defaultPointLocation, defaultZoom);
 
@@ -255,7 +256,7 @@
                 layer.bindPopup(
                     '<h1>' + feature.properties.GuideName1 + '</h1>' +
                     '<h4>' + feature.properties.GuideName2 + '</h4>' +
-                    '<p>' + feature.properties.Information + '</p>' +
+                    '<h3>' + feature.properties.Information + '</h3>' +
                     '<h3> LAND CODE(s): <a href="#" onclick="getLandCodeValueFromPopup()" id="landCodePopupText">' + feature.properties.LandCode + '</a></h3>' +  
                     '<h4><a href=' + feature.properties.URL1 + ' target="_blank">' + urlEvaluator(feature.properties.URL1, "Link 1") + '</href></h4>' +
                     '<h4><a href=' + feature.properties.URL2 + ' target="_blank">' + urlEvaluator(feature.properties.URL2, "Link 2") + '</href></h4>' +
@@ -277,6 +278,8 @@
 
         let huntSpotFeatures = huntingSpotsGeojson["features"]
         let huntSpotInventory = {}
+        let acreageInventory = {}
+
         for (let i = 0; i < huntSpotFeatures.length; i++) {
             let properties = huntSpotFeatures[i]["properties"];
             let code = properties["LandCode"];
@@ -288,14 +291,20 @@
                 
                 let lat = properties["Latitude"];
                 let long = properties["Longitude"];
-                
+                let acres = properties["Acres"]
+
                 // When the locations codes are xxx;xxx they need to be split apart for map zoom to work with drop down
                 let codeArray = code.split(";")
                 for (let i = 0; i < codeArray.length; i++){
                     huntSpotInventory[codeArray[i]] = [lat, long]
-                }               
+
+                    if (typeof acres !== 'undefined' || acres != null) {
+                        acreageInventory[codeArray[i]] = acres
+                    } else {
+                        acreageInventory[codeArray[i]] = ["unknown"]
+                    }
+                }                
             }
-            
         }
 
         // Build the choices for the drop down list, from the landcodes json. Start with disabled instruction option
@@ -323,7 +332,6 @@
         let harvestBarChartSexSum = new Chart(document.getElementById('landCodeHarvestChartSexBarSum'), createBarConfig(data={}, titleText="Total Deer Harvest by Sex by Season")); // Needs to be in namespace before function acts on it
         let harvestLineChartSexMean = new Chart(document.getElementById('landCodeHarvestChartSexLineMean'), createLineConfig(data={}, titleText="Mean Deer Harvest by Sex by Season Day")); // Needs to be in namespace before function acts on it
         let harvestBarChartSpeciesSum = new Chart(document.getElementById('landCodeHarvestChartSpeciesBarSum'), createBarConfig(data={}, titleText="Total Deer Harvest by Species by Season")); // Needs to be in namespace before function acts on it
-        
         let reservationsLineChartMeanMinMax = new Chart(document.getElementById('landCodeReservationsChartMeanMinMax'), createLineConfig(data={}, titleText="Mean/Min/Max Hunter Reservations by Season Day", displayLegend=false, yLabelText="Reservations")); // Needs to be in namespace before function acts on it
 
         function updatePageWithUserChosenCode(fullChoiceText, landCodeValue) {
@@ -342,12 +350,9 @@
             document.getElementById("antlersWeekdayBox").src = `AntlerPoints/PointsWeekdayBox_${landCodeValue}.png`;
             document.getElementById("antlersWeekdayHeat").src = `AntlerPoints/PointsWeekdayHeat_${landCodeValue}.png`; // i think should be HarvestsWeekdayHeat_
 
-
             // Getting the number of seasons of data and setting element values
             let seasonCountObj;
             let numSeasons;
-            let minSeason;
-            let maxSeason;
             const colorFemaleAntlerlessMale = "#ff5393";
             const colorMale = "#2986cc";
             const colorButtonbuck = "#9fc5e8";
@@ -358,15 +363,11 @@
             try {
                 seasonCountObj = numberSeasonsPerLandcode[landCodeValue]
                 numSeasons = seasonCountObj["SeasonsCount"]
-                minSeason = seasonCountObj["SeasonMin"].replace("_", "/")
-                maxSeason = seasonCountObj["SeasonMax"].replace("_", "/")
             } catch (TypeError) {
                 numSeasons = 0;
-                minSeasons = 0;
-                maxSeasons = 0;
             }
-            finally {                
-                document.getElementById("seasonsOfData").innerHTML = `*Mean values based on ${numSeasons} seasons of data.`// (${minSeason} to ${maxSeason})`;
+            finally {
+                document.getElementById("seasonsOfData").innerHTML = `Mean values based on ${numSeasons} seasons of data.`// (${minSeason} to ${maxSeason})`;
             }
 
             // Species harvest ratio for land code of interest
@@ -381,9 +382,8 @@
             finally {         
                 percentSika = speciesData["s"]
                 percentWhitetail = speciesData["w"]     
-                document.getElementById("speciesPresentKPI").innerHTML = `*Whitetail ${percentWhitetail}%  -  Sika ${percentSika}%`
+                document.getElementById("speciesPresentKPI").innerHTML = `Whitetail ${percentWhitetail}%  -  Sika ${percentSika}%`
             }
-
 
             // Single-Line Chart Based on Season Day
             let labelsSeasonDay = genericSeasonDayArraySorted; // ASSESS: why do this reassignment??
@@ -446,23 +446,33 @@
 
             for (let i = 0; i < genericSeasonsArraySorted.length; i++) {
                 let seasonFocus = genericSeasonsArraySorted[i]
+                let antlerFocus;
+                let noAntlerFocus;
+                let buttonFocus;
 
                 try {
-                    dataBarAntler.push(seasonsAntlerObjBar[seasonFocus])
+                    antlerFocus = seasonsAntlerObjBar[seasonFocus]
                 } catch {
-                    dataBarAntler.push(0)
-                }
-                try {
-                    dataBarNoAntler.push(seasonsNoAntlerObjBar[seasonFocus])
-                } catch {
-                    dataBarNoAntler.push(0)
-                }
-                try {
-                    dataBarButtonbuck.push(seasonsButtonbuckObjBar[seasonFocus])
-                } catch {
-                    dataBarButtonbuck.push(0)
+                    antlerFocus = 0
+                } finally{
+                    dataBarAntler.push(antlerFocus)
                 }
                 
+                try {
+                    noAntlerFocus = seasonsNoAntlerObjBar[seasonFocus]
+                } catch {
+                    noAntlerFocus = 0
+                } finally {
+                    dataBarNoAntler.push(noAntlerFocus)
+                }
+
+                try {
+                    buttonFocus = seasonsButtonbuckObjBar[seasonFocus]
+                } catch {
+                    buttonFocus = 0
+                } finally {
+                    dataBarButtonbuck.push(buttonFocus)
+                }
             }
 
             let barChartDatasetsArray = [{
@@ -492,6 +502,13 @@
                 document.getElementById('landCodeHarvestChartSexBarSum'),
                 configSexBar,
               );
+            
+            // Acreage and Harvests KPI's
+            let landcodeAcreageNumber = acreageInventory[landCodeValue] ? new Number(acreageInventory[landCodeValue]) : undefined;
+            let landcodeAcreageText = landcodeAcreageNumber ? landcodeAcreageNumber.toLocaleString() : "Unknown";
+
+            document.getElementById("acreageKPI").innerHTML = `${landcodeAcreageText} acres` // , ${landcodeAcreageNumber ? fullArrayHarvestsSum/landcodeAcreageNumber : "unknown"} mean harvets per acre
+
 
             // Mean Harvests by Sex by Season day, Multi Line Chart
             // May need try/catch on these
