@@ -21,6 +21,8 @@
     <script src="HarvestsByLandCodebySeasonDayMIN_Web.js"></script>
     <script src="HarvestsByLandCodebySeasonDayMAX_Web.js"></script>
 
+    <script src="LandCodesWithHarvestsPerAcreImages.js"></script>
+
     <script src="NumberOfSeasonsPerLandcode_Web.js"></script>
 
     <script src="HarvestsBySexPerLandCodeBySeasonSUM_Antlers_Web.js"></script>
@@ -93,6 +95,7 @@
     </div>
 
     <div>
+        <h2 id="areaLCName"></h2>
         <p id="seasonsOfData"></p>
         <p id="speciesPresentKPI"></p>
         <p id="acreageKPI"></p>
@@ -130,6 +133,10 @@
     <button type="button" class="collapsible">Harvests by Weapon and Season</button>
     <div class="contentImg">
         <img id="harvestsWeaponBarLandCode" src="antlerSmall.png" alt="">
+    </div>
+    <button type="button" id="harvestsPerAcreButton" class="collapsible">Harvests per Acre</button>
+    <div class="contentImg" id="harvestsPerAcreBoxContainer">
+        <img id="harvestsPerAcreBox" src="antlerSmall.png" alt="">
     </div>
 
     <h3>Antlered Harvests</h3>
@@ -337,18 +344,27 @@
         function updatePageWithUserChosenCode(fullChoiceText, landCodeValue) {
             // TODO: Break this function into many smaller focussed functions
 
-            // document.getElementById("focusArea").innerHTML = `${fullChoiceText}`;
+            document.getElementById("areaLCName").innerHTML = `${fullChoiceText}`;
 
             //Testing purposes
             //document.getElementById("harvestData").innerHTML = JSON.stringify(seasonDayHarvestsSum[landCodeValue]);
+            document.getElementById("harvestsWeaponBarLandCode").src = `GeneralHarvests/HarvestsWeaponSeasonCount_${landCodeValue}.png`;
+
+            if (landcodesWithHarvestPerAcreImages.includes(landCodeValue)) {
+                document.getElementById("harvestsPerAcreBox").src = `HarvestsPerAcre/HarvestsPerAcre_${landCodeValue}.png`;
+                document.getElementById('harvestsPerAcreButton').style.display = "initial"                
+            } else {
+                document.getElementById('harvestsPerAcreBoxContainer').style.display = "none"
+                document.getElementById('harvestsPerAcreButton').style.display = "none"
+            }
 
             document.getElementById("antlersHistLandCode").src = `AntlerPoints/PointsHist_${landCodeValue}.png`;
-            document.getElementById("harvestsWeaponBarLandCode").src = `GeneralHarvests/HarvestsWeaponSeasonCount_${landCodeValue}.png`;
             document.getElementById("harvestsWeekdaySeasonCountLandCode").src = `AntlerPoints/HarvestsWeekdaySeasonCount_${landCodeValue}.png`;
             document.getElementById("antlersSeasonBox").src = `AntlerPoints/PointsSeasonBox_${landCodeValue}.png`;
             document.getElementById("antlersSeasonHeat").src = `AntlerPoints/PointsSeasonHeat_${landCodeValue}.png`; // I think should be HarvestsSeasonHeat_
             document.getElementById("antlersWeekdayBox").src = `AntlerPoints/PointsWeekdayBox_${landCodeValue}.png`;
             document.getElementById("antlersWeekdayHeat").src = `AntlerPoints/PointsWeekdayHeat_${landCodeValue}.png`; // i think should be HarvestsWeekdayHeat_
+
 
             // Getting the number of seasons of data and setting element values
             let seasonCountObj;
@@ -507,7 +523,7 @@
             let landcodeAcreageNumber = acreageInventory[landCodeValue] ? new Number(acreageInventory[landCodeValue]) : undefined;
             let landcodeAcreageText = landcodeAcreageNumber ? landcodeAcreageNumber.toLocaleString() : "Unknown";
 
-            document.getElementById("acreageKPI").innerHTML = `${landcodeAcreageText} acres` // , ${landcodeAcreageNumber ? fullArrayHarvestsSum/landcodeAcreageNumber : "unknown"} mean harvets per acre
+            document.getElementById("acreageKPI").innerHTML = `Acres - ${landcodeAcreageText}` // , ${landcodeAcreageNumber ? fullArrayHarvestsSum/landcodeAcreageNumber : "unknown"} mean harvets per acre
 
 
             // Mean Harvests by Sex by Season day, Multi Line Chart
@@ -882,7 +898,7 @@
                 reservationsLineChartMeanMinMax.destroy();
             }
 
-             // If harvests are all one species then don't show the chart, it's pointless and just matches the total by sex bar chart.
+             // If reservations are not applicable then don't show.
              if ( typeof dataOfInterestReservationsMeanSeasonDay == 'undefined') {
                 document.getElementById('landCodeReservationsChartMeanMinMax').style.display = "none"
                 document.getElementById('reservationsButton').style.display = "none"
