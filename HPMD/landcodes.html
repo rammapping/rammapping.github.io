@@ -137,6 +137,11 @@
     <button type="button" id="harvestsPerAcreButton" class="collapsible">Harvests per Acre</button>
     <div class="contentImg" id="harvestsPerAcreBoxContainer">
         <img id="harvestsPerAcreBox" src="antlerSmall.png" alt="">
+        <p>Harvests per acre based on MD DNR hunting guide acreage value. 
+            Harvests per acre dependent on the acreage value accuracy, and any changes in huntable acreage over time.
+            Landcodes with unknown acreage, or that report harvets for more than a single hunting area are not included.
+        </p>
+
     </div>
 
     <h3>Antlered Harvests</h3>
@@ -158,8 +163,8 @@
         <img id="antlersWeekdayBox" src="antlerSmall.png" alt="">
         <img id="antlersWeekdayHeat" src="antlerSmall.png" alt="">
     </div>
-    <p>*Red line in box plots represents the median value</p>
-    <p>Box plots & Heatmaps show the same data but we like to see both.</p>
+    <p>Red line in box plots represents the median value</p>
+    <p>Box plots & Heatmaps show the same data.</p>
     <p>"Antler points" means the bucks rack size. For example an 8 point.</p>
     <p><a href="https://www.khanacademy.org/math/statistics-probability/summarizing-quantitative-data/box-whisker-plots/a/box-plot-review" target="_blank">Example Box Plots explanation</a></p>
     
@@ -346,8 +351,6 @@
 
             document.getElementById("areaLCName").innerHTML = `${fullChoiceText}`;
 
-            //Testing purposes
-            //document.getElementById("harvestData").innerHTML = JSON.stringify(seasonDayHarvestsSum[landCodeValue]);
             document.getElementById("harvestsWeaponBarLandCode").src = `GeneralHarvests/HarvestsWeaponSeasonCount_${landCodeValue}.png`;
 
             if (landcodesWithHarvestPerAcreImages.includes(landCodeValue)) {
