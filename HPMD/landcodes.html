@@ -927,21 +927,26 @@
 
         // Need function to get the users choice of land code from the pop-up and manipulate dynamic elements
         function getLandCodeValueFromPopup() {
+            let selectedText;
+
             let popupLandCodeLinkElement = document.getElementById("landCodePopupText");
-            let selectedText = "not needed";
             let selectedValue = popupLandCodeLinkElement.innerHTML.split(";")[0]; // Sometimes there are two values separated by a semi-colon
             // document.getElementById("landCodeDropDown").selectedValue = selectedValue;  // doesn't work like i want
-            updatePageWithUserChosenCode(selectedText, selectedValue)
+
             for (let i = 0; i < landCodes.length; i++) {
                 let obj = landCodes[i]
                 let code = obj["LandCode"]
                 if (code == selectedValue) {
-                    document.getElementById("landCodeDropDown").selectedIndex = i + 1; // +1 because first option is disabled statement option
+                    let dropDownElement = document.getElementById("landCodeDropDown");
+                    dropDownElement.selectedIndex = i + 1 // +1 because first option is disabled statement option
+                    selectedText = dropDownElement.options[dropDownElement.selectedIndex].innerHTML;
                     break
                 }
             }
 
+            updatePageWithUserChosenCode(selectedText, selectedValue)
         }
+
         // Need function to get the users choice of land code from the drop down and manipulate dynamic elements
         function getLandCodeValue() {
             let dropDownElement = document.getElementById("landCodeDropDown");
@@ -949,7 +954,6 @@
             let selectedValue = dropDownElement.value;
             updatePageWithUserChosenCode(selectedText, selectedValue)
         }
-
 
     </script>
 
