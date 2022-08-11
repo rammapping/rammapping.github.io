@@ -86,18 +86,14 @@
                     <th><a href="About.html">About</a></th>
                     <th><a href="Tips.html">Tips & FAQ</a></th>
                     <th><a href="Feedback.html">Feedback</a></th>
-
-                    <!-- <th><a href="HPMD/huntLocations.html" target="_blank">Locations Map Only</a></th> -->
                 </tr>
             </table>
-            <!-- <h2>Harvested Animals Research Tool (HART)</h2> -->
         </div>
         <div id="hpmdHeader">
             <h1 id="hpmdHeaderText">Hunting Public Maryland Resources</h1>
         </div>
         <hr>
     </header>
-    <!-- <hr> -->
     <div>
         <h2><a href="HPMD/landcodes.html">Deer HART</a></h2>
         <h3>RAM Deer Season Stats</h3>
@@ -110,21 +106,150 @@
             <li id="todayDate"></li>
             <li id="seasonDay"></li>
         </ul>
-        <p>** Thanksgiving day is "Season Day" zero (0). See the Tips page for more on this.</p>
-
-
-
     </div>
     <hr>
-    <div>
-        <p>HART... Harvested Animals Research Tool</p>
-        <p>The information in map popups is based on <a href="https://www.eregulations.com/assets/docs/guides/22MDHD.pdf" target="_blank">2022-2023 MD DNR Hunting Guide</a></p></div>
-    </div>
-    <!-- <hr> -->
+
+    <h5>
+        If you like this project, please show us your support. All contributions are appreciated.
+    </h5>
+    <div id="smart-button-container">
+        <div style="text-align: center">
+          <label for="description">Comment </label><input type="text" name="descriptionInput" id="description" maxlength="127" value="">
+        </div>
+        <p class="paypalP" id="descriptionError" style="visibility: hidden; color:red; text-align: center;">Please enter a comment</p>
+        
+        <div style="text-align: center">
+          <label for="amount">Donation Amount </label><input name="amountInput" type="number" id="amount" value="10" ><span> USD</span>
+        </div>
+        <p class="paypalP" id="priceLabelError" style="visibility: hidden; color:red; text-align: center;">Please enter a donation amount</p>
+        
+          <!--This all has to stay on same line or causes problems-->
+        <div id="invoiceidDiv" style="text-align: center; display: none;"><label for="invoiceid"> </label><input name="invoiceid" maxlength="127" type="text" id="invoiceid" value="" > 
+        </div>
+        <p class="paypalP" id="invoiceidError" style="visibility: hidden; color:red; text-align: center;">Please enter an Invoice ID</p>
+
+        <div style="text-align: center; margin-top: 0.625rem;" id="paypal-button-container"></div>
+      </div>
+
+      <!-- LIVE -->
+      <script src="https://www.paypal.com/sdk/js?client-id=AfCTGgmwXX9G6mLMaxtF-QJIPb9N-3WOpnqlZ8Jq-M92Uh28LYhzDKTa86ZCAwgG9IG71Z8tBCkNfMA-&enable-funding=venmo&currency=USD" data-sdk-integration-source="button-factory"></script>
+      
+      <!-- SANDBOX -->
+      <!-- <script src="https://www.paypal.com/sdk/js?client-id=sb&enable-funding=venmo&currency=USD" data-sdk-integration-source="button-factory"></script> -->
+      
+      <script>
+      function initPayPalButton() {
+        var description = document.querySelector('#smart-button-container #description');
+        var amount = document.querySelector('#smart-button-container #amount');
+        var descriptionError = document.querySelector('#smart-button-container #descriptionError');
+        var priceError = document.querySelector('#smart-button-container #priceLabelError');
+        var invoiceid = document.querySelector('#smart-button-container #invoiceid');
+        var invoiceidError = document.querySelector('#smart-button-container #invoiceidError');
+        var invoiceidDiv = document.querySelector('#smart-button-container #invoiceidDiv');
+    
+        var elArr = [description, amount];
+    
+        if (invoiceidDiv.firstChild.innerHTML.length > 1) {
+          invoiceidDiv.style.display = "block";
+        }
+    
+        var purchase_units = [{"amount":{"currency_code":"USD","value":1,"breakdown":{"item_total":{"currency_code":"USD","value":1}}},"items":[{"name":"item name","unit_amount":{"currency_code":"USD","value":1},"quantity":"1","category":"DONATION"}]}]
+    
+        function validate(event) {
+          return event.value.length > 0;
+        }
+    
+        paypal.Buttons({
+          style: {
+            color: 'gold',
+            shape: 'pill',
+            label: 'donate',
+            layout: 'vertical',
+            
+          },
+    
+          onInit: function (data, actions) {
+            actions.disable();
+    
+            if(invoiceidDiv.style.display === "block") {
+              elArr.push(invoiceid);
+            }
+    
+            elArr.forEach(function (item) {
+              item.addEventListener('keyup', function (event) {
+                var result = elArr.every(validate);
+                if (result) {
+                  actions.enable();
+                } else {
+                  actions.disable();
+                }
+              });
+            });
+          },
+    
+          onClick: function () {
+            if (description.value.length < 1) {
+              descriptionError.style.visibility = "visible";
+            } else {
+              descriptionError.style.visibility = "hidden";
+            }
+    
+            if (amount.value.length < 1) {
+              priceError.style.visibility = "visible";
+            } else {
+              priceError.style.visibility = "hidden";
+            }
+    
+            if (invoiceid.value.length < 1 && invoiceidDiv.style.display === "block") {
+              invoiceidError.style.visibility = "visible";
+            } else {
+              invoiceidError.style.visibility = "hidden";
+            }
+    
+            purchase_units[0].description = description.value;
+            purchase_units[0].amount.value = amount.value;
+            purchase_units[0].amount.breakdown.item_total.value = amount.value;
+            purchase_units[0].items[0].unit_amount.value = amount.value;
+    
+            if(invoiceid.value !== '') {
+              purchase_units[0].invoice_id = invoiceid.value;
+            }
+          },
+    
+          createOrder: function (data, actions) {
+            return actions.order.create({
+              purchase_units: purchase_units,
+            });
+          },
+    
+          onApprove: function (data, actions) {
+            return actions.order.capture().then(function (orderData) {
+    
+              // Full available details
+              console.log('Capture result', orderData, JSON.stringify(orderData, null, 2));
+    
+              // Show a success message within this page, e.g.
+              const element = document.getElementById('paypal-button-container');
+              element.innerHTML = '';
+              element.innerHTML = '<h3>Thank you for your payment!</h3>';
+    
+              // Or go to another URL:  actions.redirect('thank_you.html');
+              
+            });
+          },
+    
+          onError: function (err) {
+            console.log(err);
+          }
+        }).render('#paypal-button-container');
+      }
+      initPayPalButton();
+      </script>
+    <hr>
     <div>
         <a href="Disclaimer.html">DISCLAIMER</a>
     </div>
-    
+
 </body>
 <footer class="footer">
     &copy; Copyright 2022 RAM Mapping<br>
