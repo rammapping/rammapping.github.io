@@ -64,7 +64,7 @@
         }
 
         window.onload = function(){
-            document.getElementById('todayDate').innerHTML = `Today: ${todayDateBasic.toLocaleDateString()}`;
+            // document.getElementById('todayDate').innerHTML = `Today: ${todayDateBasic.toLocaleDateString()}`;
             document.getElementById('season').innerHTML = `Season: ${seasonString}`;
             document.getElementById('seasonStart').innerHTML = `Season Start: ${startDateFromMillis.toLocaleDateString()}`;
             // document.getElementById('seasonEnd').innerHTML = `Season End: ${endDateBasic.toLocaleDateString()}`;
@@ -95,23 +95,31 @@
         <hr>
     </header>
     <div>
-        <h2><a href="HPMD/landcodes.html">Deer HART</a></h2>
-        <h3>RAM Deer Season Stats</h3>
+        <h3>Hunting Area Research Tools</h3>
+        <!-- <button class="hartButton" type="button" onclick="window.open('HPMD/landcodes.html')">Deer HART</button> -->
+        <button class="hartButton" type="button" onclick="location.href='HPMD/landcodes.html'">Deer HART</button>
+
+        <!-- onclick="location.href='HPMD/landcodes.html';" value="Deer HART"  -->
+        <!-- <h2><a href="HPMD/landcodes.html">Deer HART</a></h2> -->
+        <p>RAM Deer Season Stats</p>
         <ul>
             <!-- <li id="seasonEnd"></li> -->
             <li id="season"></li>
             <li id="seasonStart"></li>
-        </ul>
-        <ul>
-            <li id="todayDate"></li>
+        <!-- </ul>
+        <ul> -->
+            <!-- <li id="todayDate"></li> -->
             <li id="seasonDay"></li>
         </ul>
     </div>
     <hr>
 
-    <h5>
+    <h4>
         If you like this project, please show us your support. All contributions are appreciated.
-    </h5>
+    </h4>
+
+
+    <!-- ########################## PayPal Section  ########################## -->
     <div id="smart-button-container">
         <div style="text-align: center">
           <label for="description">Comment </label><input type="text" name="descriptionInput" id="description" maxlength="127" value="">
