@@ -32,7 +32,7 @@
         const seasonDatesObj = seasonDates[seasonStartYear]
         const startMillis = seasonDatesObj["start"]
         const thanksgivingMillis = seasonDatesObj["thanksgiving"]
-        const endMillis = seasonDatesObj["end"]
+        // const endMillis = seasonDatesObj["end"]
         
         // Create the start date components
         const startDateFromMillis = new Date(startMillis)
@@ -62,15 +62,23 @@
             }
 
         }
+        // Removed, too slow, has to wait on paypal crap
+        // window.onload = function(){
+        //     // document.getElementById('todayDate').innerHTML = `Today: ${todayDateBasic.toLocaleDateString()}`;
+        //     document.getElementById('season').innerHTML = `${seasonString}`;
+        //     document.getElementById('seasonStart').innerHTML = `${startDateFromMillis.toLocaleDateString()}`;
+        //     // document.getElementById('seasonEnd').innerHTML = `Season End: ${endDateBasic.toLocaleDateString()}`;
+        //     document.getElementById('seasonDay').innerHTML = `${deerSeasonDay()}`;
+        // };
 
-        window.onload = function(){
+        document.addEventListener("DOMContentLoaded", function(){
             // document.getElementById('todayDate').innerHTML = `Today: ${todayDateBasic.toLocaleDateString()}`;
-            document.getElementById('season').innerHTML = `Season: ${seasonString}`;
-            document.getElementById('seasonStart').innerHTML = `Season Start: ${startDateFromMillis.toLocaleDateString()}`;
+            document.getElementById('season').innerHTML = `${seasonString}`;
+            document.getElementById('seasonStart').innerHTML = `${startDateFromMillis.toLocaleDateString()}`;
             // document.getElementById('seasonEnd').innerHTML = `Season End: ${endDateBasic.toLocaleDateString()}`;
-            document.getElementById('seasonDay').innerHTML = `Season Day: ${deerSeasonDay()}`;
-
-        };
+            document.getElementById('seasonDay').innerHTML = `${deerSeasonDay()}`;
+        }
+        );
 
 
     </script>
@@ -100,22 +108,22 @@
         <!-- <button class="hartButton" type="button" onclick="window.open('HPMD/landcodes.html')">Deer HART</button> -->
         <button class="hartButton" type="button" onclick="location.href='HPMD/landcodes.html'">Deer HART</button>
 
-        <!-- onclick="location.href='HPMD/landcodes.html';" value="Deer HART"  -->
-        <!-- <h2><a href="HPMD/landcodes.html">Deer HART</a></h2> -->
-        <p>RAM Deer Season Stats</p>
-        <ul>
-            <!-- <li id="seasonEnd"></li> -->
-            <li id="season"></li>
-            <li id="seasonStart"></li>
-        <!-- </ul>
-        <ul> -->
-            <!-- <li id="todayDate"></li> -->
-            <li id="seasonDay"></li>
-        </ul>
+        <dl>
+          <dt>Season</dt>
+          <dd id="season"></dd>
+          <dt>Start Date</dt>
+          <dd id="seasonStart"></dd>
+          <dt>RAM Season Day</dt>
+          <dd id="seasonDay"></dd>
+        </dl>
+    </div>
+
+    <div>
+        <a id="disclaimer" href="Disclaimer.html">DISCLAIMER</a>
     </div>
     <hr>
 
-    <h3>
+    <h3 id="supportText">
         If you like this project, please show us your support. All contributions are appreciated.
     </h3>
 
@@ -251,10 +259,6 @@
     }
     initPayPalButton();
     </script>
-    <hr>
-    <div>
-        <a href="Disclaimer.html">DISCLAIMER</a>
-    </div>
 
 </body>
 <footer class="footer">

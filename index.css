@@ -39,7 +39,22 @@ td, th {
   text-align: center;
   padding: 3px;
 }
-
+#disclaimer {
+  font-size: x-small;
+}
+dt {
+  color: gray;
+  font-weight: bold;
+}
+dd {
+  font-size:larger;
+  font-weight: bold;
+}
+#supportText {
+  color: gray;
+  font-weight: bolder;
+  font-style: italic;
+}
 /* #buckImage {
   max-width: 6%;
   height: auto;
