@@ -45,6 +45,8 @@
 
     <script src="lineChart.js"></script>
     <script src="barChart.js"></script>
+
+    <!-- Load Chart JS library -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" /> -->
 
@@ -95,24 +97,54 @@
     </div>
 
     <div>
-        <h2 id="areaLCName"></h2>
-        <p id="seasonsOfData"></p>
-        <p id="speciesPresentKPI"></p>
-        <p id="acreageKPI"></p>
+        <h2 id="areaLCName">Chosen Area Name, Metrics, and Charts</h2>
+        <ul>
+            <li id="seasonsOfData">number seasons of data</li>
+            <li id="speciesPresentKPI">harvested species percentage</li>
+            <li id="acreageKPI">acreage according to MD DNR</li>
+        </ul>
     </div>
+
     <h3>All Harvests</h3>
     <button type="button" class="collapsible">Total Harvests by Sex by Season</button>
     <div class="content">
+        <div>
+            <button type="button" class="collapsible helpfulQs">Helpful Q's</button>
+            <div class="content">
+                <ul>
+                    <li>What is the overall trend?</li>
+                    <li>How does each sex group trend? (HINT: Click the legend rectangle to turn data on/off)</li>
+                    <li>What is the ratio of harvests by sex doing?</li>
+                    <li>How does the total quantity (y-scale) of harvests compare to other areas you hunt? (See 'Harvests by Acre' chart, if available)</li>
+                </ul>
+            </div>
+        </div>        
         <canvas id="landCodeHarvestChartSexBarSum" width="1000" height="300" style="border:1px solid"></canvas>
     </div>
     
     <button type="button" class="collapsible">Mean Harvests by Sex by Season Day</button>
     <div class="content">
+        <div>
+            <button type="button" class="collapsible helpfulQs">Helpful Q's</button>
+            <div class="content">
+                <ul>
+                    <li >Is Sunday hunting allowed? If No, then at busy areas the harvest lines should drop to zero every week on Sunday's and make it easy to see weekly cycles.</li>
+                    <li >Is there a weekly pattern/rythm to harvests? If so, is it the weekend rush or some other pattern?</li>
+                    <li>Are there times when the buck harvests are more than doe harvests? Is that a sign of rut activity or due to regulations?</li>
+                </ul>
+            </div>
+        </div>  
         <canvas id="landCodeHarvestChartSexLineMean" width="1000" height="300" style="border:1px solid"></canvas>
     </div>
 
     <button type="button" id="speciesButton" class="collapsible">Total Harvests by Species by Season</button>
     <div class="content">
+        <div>
+            <button type="button" class="collapsible helpfulQs">Helpful Q's</button>
+            <div class="content">
+                <p>Coming...</p>
+            </div>
+        </div>  
         <canvas id="landCodeHarvestChartSpeciesBarSum" width="1000" height="300" style="border:1px solid"></canvas>
     </div>
 
@@ -123,17 +155,31 @@
 
     <button type="button" class="collapsible">Mean/Min/Max Harvests by Season Day</button>
     <div class="content">
+        <div>
+            <button type="button" class="collapsible helpfulQs">Helpful Q's</button>
+            <div class="content">
+                <p>Coming...</p>
+            </div>
+        </div>  
         <canvas id="landCodeHarvestChartMeanMinMax" width="1000" height="300" style="border:1px solid"></canvas>
     </div>
 
     <button type="button" id="reservationsButton" class="collapsible">Mean/Min/Max Reservations by Season Day</button>
     <div class="content">
+        <div>
+            <button type="button" class="collapsible helpfulQs">Helpful Q's</button>
+            <div class="content">
+                <p>Coming...</p>
+            </div>
+        </div>  
         <canvas id="landCodeReservationsChartMeanMinMax" width="1000" height="300" style="border:1px solid"></canvas>
     </div>
+
     <button type="button" class="collapsible">Harvests by Weapon and Season</button>
     <div class="contentImg">
         <img id="harvestsWeaponBarLandCode" src="antlerSmall.png" alt="">
     </div>
+
     <button type="button" id="harvestsPerAcreButton" class="collapsible">Harvests per Acre</button>
     <div class="contentImg" id="harvestsPerAcreBoxContainer">
         <img id="harvestsPerAcreBox" src="antlerSmall.png" alt="">
@@ -145,24 +191,29 @@
     </div>
 
     <h3>Antlered Harvests</h3>
+    
     <button type="button" class="collapsible">Distribution of antler points per harvest</button>
     <div class="contentImg">
         <img id="antlersHistLandCode" src="antlerSmall.png" alt="">
     </div>
+    
     <button type="button" class="collapsible">Buck harvests by Weekday and Season</button>
     <div class="contentImg">
         <img id="harvestsWeekdaySeasonCountLandCode" src="antlerSmall.png" alt="">
     </div>
+    
     <button type="button" class="collapsible">Distribution of antler points & buck harvests by Season</button>
     <div class="contentImg">
         <img id="antlersSeasonBox" src="antlerSmall.png" alt="">
         <img id="antlersSeasonHeat" src="antlerSmall.png" alt="">
     </div>
+
     <button type="button" class="collapsible">Distribution of antler points & buck harvests by Weekday</button>
     <div class="contentImg">
         <img id="antlersWeekdayBox" src="antlerSmall.png" alt="">
         <img id="antlersWeekdayHeat" src="antlerSmall.png" alt="">
     </div>
+
     <p>Red line in box plots represents the median value</p>
     <p>Box plots & Heatmaps show the same data.</p>
     <p>"Antler points" means the bucks rack size. For example an 8 point.</p>
