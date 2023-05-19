@@ -113,7 +113,7 @@
             <div class="content">
                 <ul>
                     <li>What is the overall trend?</li>
-                    <li>How does each sex group trend? (HINT: Click the legend rectangle to turn data on/off)</li>
+                    <li>How does each sex group trend? (Tip: Click the legend rectangle to turn data on/off)</li>
                     <li>What is the ratio of harvests by sex doing?</li>
                     <li>How does the total quantity (y-scale) of harvests compare to other areas you hunt? (See 'Harvests by Acre' chart, if available)</li>
                 </ul>
@@ -162,6 +162,8 @@
             </div>
         </div>  
         <canvas id="landCodeHarvestChartMeanMinMax" width="1000" height="300" style="border:1px solid"></canvas>
+        <!-- TODO: Add note on mean values... the number of seasons will affect this value. Only good for areas open for all seasons. -->
+        <p>*Mean values for areas with fewer than the maximum number of seasons will be lower than actual. We backfill empty seasons with zeros (0) and this influences the mean.</p>
     </div>
 
     <button type="button" id="reservationsButton" class="collapsible">Mean/Min/Max Reservations by Season Day</button>
