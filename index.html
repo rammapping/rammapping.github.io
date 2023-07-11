@@ -118,10 +118,18 @@
         </dl>
     </div>
 
-    <div>
-        <a id="disclaimer" href="Disclaimer.html">DISCLAIMER</a>
-        <a id="changeLog" href="changeLog.html">Change Log</a>
-    </div>
+    <!-- <div> -->
+    <table>
+      <tr>
+        <td>
+        <a id="disclaimer" class="minorText" href="Disclaimer.html">Disclaimer</a>
+        </td>
+        <td>
+        <a id="changeLog" class="minorText" href="changeLog.html">Change Log</a>
+        </td>
+      </tr>
+    </table>
+        <!-- </div> -->
     <hr>
 
     <h3 id="supportText">
@@ -142,8 +150,7 @@
       <p class="paypalP" id="priceLabelError" style="visibility: hidden; color:red; text-align: center;">Please enter a donation amount</p>
 
         <!--This all has to stay on same line or causes problems-->
-      <div id="invoiceidDiv" style="text-align: center; display: none;"><label for="invoiceid"> </label><input name="invoiceid" maxlength="127" type="text" id="invoiceid" value="" > 
-      </div>
+      <div id="invoiceidDiv" style="text-align: center; display: none;"><label for="invoiceid"> </label><input name="invoiceid" maxlength="127" type="text" id="invoiceid" value="" ></div>
       <p class="paypalP" id="invoiceidError" style="visibility: hidden; color:red; text-align: center;">Please enter an Invoice ID</p>
 
       <div style="text-align: center; margin-top: 0.625rem;" id="paypal-button-container"></div>

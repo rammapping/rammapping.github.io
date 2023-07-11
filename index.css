@@ -39,7 +39,7 @@ td, th {
   text-align: center;
   padding: 3px;
 }
-#disclaimer {
+.minorText {
   font-size: x-small;
 }
 dt {
@@ -73,6 +73,7 @@ dd {
   display: inline-block;
   font-size: 20px;
 } */
+
 .hartButton {
   cursor: pointer;
   border-radius: 10px;
