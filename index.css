@@ -57,7 +57,7 @@ dd {
 }
 .pitchlanguage {
   /* color: gray; */
-  font-size: large;
+  font-size: x-large;
   font-weight: bolder;
 }
 #pitchDiv {
@@ -100,3 +100,4 @@ dd {
   display: inline-block;
   font-size: 25px;
 }
+
